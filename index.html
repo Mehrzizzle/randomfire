@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Momentum · Daily Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg: #0b0f1a;
+  --bg-grad-1: #131a2e;
+  --bg-grad-2: #0b0f1a;
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-2: rgba(255, 255, 255, 0.06);
+  --surface-solid: #151b2b;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text: #eef1f8;
+  --text-dim: #9aa3b8;
+  --text-faint: #626b83;
+  --accent: #7c5cff;
+  --accent-2: #22d3ee;
+  --good: #34d399;
+  --warn: #fbbf24;
+  --danger: #f87171;
+  --shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.7);
+  --radius: 20px;
+  --radius-sm: 14px;
+}
+[data-theme="light"] {
+  --bg: #eef1f8;
+  --bg-grad-1: #ffffff;
+  --bg-grad-2: #e7ebf5;
+  --surface: rgba(255, 255, 255, 0.75);
+  --surface-2: rgba(255, 255, 255, 0.95);
+  --surface-solid: #ffffff;
+  --border: rgba(15, 23, 42, 0.08);
+  --border-strong: rgba(15, 23, 42, 0.14);
+  --text: #10162a;
+  --text-dim: #55607a;
+  --text-faint: #97a0b6;
+  --shadow: 0 20px 50px -24px rgba(30, 41, 90, 0.35);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(124, 92, 255, 0.18), transparent 60%),
+    radial-gradient(900px 500px at -10% 10%, rgba(34, 211, 238, 0.12), transparent 55%),
+    linear-gradient(160deg, var(--bg-grad-1), var(--bg-grad-2));
+  background-attachment: fixed;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.4s ease, color 0.3s ease;
+  padding: clamp(16px, 3vw, 40px);
+}
+.wrap { max-width: 1180px; margin: 0 auto; }
+
+/* ---------- Header ---------- */
+header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.brand { display: flex; align-items: center; gap: 14px; }
+.logo {
+  width: 46px; height: 46px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  display: grid; place-items: center;
+  box-shadow: 0 8px 24px -6px rgba(124, 92, 255, 0.6);
+  flex-shrink: 0;
+}
+.logo svg { width: 26px; height: 26px; }
+.greeting h1 {
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(1.5rem, 3.4vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.greeting p { color: var(--text-dim); font-size: 0.95rem; margin-top: 3px; }
+.header-actions { display: flex; align-items: center; gap: 10px; }
+.icon-btn {
+  width: 44px; height: 44px; border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+.icon-btn:hover { border-color: var(--border-strong); background: var(--surface-2); transform: translateY(-2px); }
+.icon-btn svg { width: 20px; height: 20px; }
+
+/* ---------- Stat cards ---------- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+}
+.stat {
+  padding: 20px 22px;
+  display: flex; align-items: center; gap: 18px;
+  position: relative; overflow: hidden;
+}
+.stat .ring { flex-shrink: 0; }
+.stat-body .label { color: var(--text-dim); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+.stat-body .value { font-family: 'Sora', sans-serif; font-size: 1.9rem; font-weight: 800; line-height: 1.1; margin-top: 2px; }
+.stat-body .sub { color: var(--text-faint); font-size: 0.82rem; margin-top: 2px; }
+.stat-icon {
+  width: 52px; height: 52px; border-radius: 14px; flex-shrink: 0;
+  display: grid; place-items: center;
+}
+.stat-icon svg { width: 26px; height: 26px; }
+.i-fire { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
+.i-check { background: rgba(52, 211, 153, 0.15); color: var(--good); }
+.i-cal { background: rgba(34, 211, 238, 0.15); color: var(--accent-2); }
+
+/* ---------- Layout ---------- */
+.grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+.panel { padding: 22px 24px 26px; }
+.panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px; gap: 12px;
+}
+.panel-head h2 {
+  font-family: 'Sora', sans-serif; font-size: 1.15rem; font-weight: 700;
+  display: flex; align-items: center; gap: 10px;
+}
+.panel-head h2 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.count-pill {
+  font-size: 0.82rem; color: var(--text-dim); font-weight: 600;
+  background: var(--surface-2); border: 1px solid var(--border);
+  padding: 4px 12px; border-radius: 999px;
+}
+
+/* ---------- Add row ---------- */
+.add-row { display: flex; gap: 10px; margin-bottom: 16px; }
+.add-row input {
+  flex: 1; min-width: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.add-row input::placeholder { color: var(--text-faint); }
+.add-row input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.18); }
+.btn-add {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border: none; color: #fff; font-weight: 700; font-family: inherit;
+  padding: 0 18px; border-radius: 12px; cursor: pointer;
+  display: flex; align-items: center; gap: 6px; font-size: 0.92rem;
+  transition: transform 0.15s, box-shadow 0.2s; white-space: nowrap;
+  box-shadow: 0 8px 20px -8px rgba(124, 92, 255, 0.7);
+}
+.btn-add:hover { transform: translateY(-2px); box-shadow: 0 12px 26px -8px rgba(124, 92, 255, 0.8); }
+.btn-add svg { width: 18px; height: 18px; }
+
+/* ---------- Task list ---------- */
+.list { display: flex; flex-direction: column; gap: 10px; }
+.item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: transform 0.18s ease, border-color 0.2s, opacity 0.3s, background 0.2s;
+  animation: pop 0.3s ease;
+}
+@keyframes pop { from { opacity: 0; transform: translateY(6px) scale(0.98); } to { opacity: 1; transform: none; } }
+.item:hover { border-color: var(--border-strong); transform: translateX(3px); }
+.check {
+  width: 26px; height: 26px; border-radius: 9px; flex-shrink: 0;
+  border: 2px solid var(--text-faint);
+  cursor: pointer; display: grid; place-items: center;
+  transition: all 0.2s ease; background: transparent;
+}
+.check svg { width: 15px; height: 15px; stroke-width: 3.5; opacity: 0; transform: scale(0.5); transition: all 0.2s ease; color: #fff; }
+.item.done .check { background: linear-gradient(135deg, var(--good), #10b981); border-color: transparent; }
+.item.done .check svg { opacity: 1; transform: scale(1); }
+.item-txt { flex: 1; font-size: 0.97rem; font-weight: 500; word-break: break-word; transition: color 0.2s; }
+.item.done .item-txt { color: var(--text-faint); text-decoration: line-through; }
+.item-actions { display: flex; gap: 4px; opacity: 0; transition: opacity 0.2s; }
+.item:hover .item-actions, .item:focus-within .item-actions { opacity: 1; }
+.mini-btn {
+  width: 32px; height: 32px; border-radius: 9px; border: none;
+  background: transparent; color: var(--text-faint); cursor: pointer;
+  display: grid; place-items: center; transition: all 0.18s;
+}
+.mini-btn:hover { background: var(--surface); color: var(--text); }
+.mini-btn.del:hover { color: var(--danger); }
+.mini-btn svg { width: 16px; height: 16px; }
+
+/* ---------- Habits ---------- */
+.habit {
+  padding: 15px 16px; background: var(--surface-2);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  animation: pop 0.3s ease;
+}
+.habit-top { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.habit-emoji {
+  width: 40px; height: 40px; border-radius: 11px; flex-shrink: 0;
+  display: grid; place-items: center; font-size: 1.25rem;
+  background: var(--surface); border: 1px solid var(--border);
+}
+.habit-info { flex: 1; min-width: 0; }
+.habit-name { font-weight: 600; font-size: 0.97rem; }
+.habit-streak { font-size: 0.8rem; color: #fb923c; font-weight: 600; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+.habit-streak svg { width: 13px; height: 13px; }
+.week { display: flex; gap: 6px; }
+.day {
+  flex: 1; aspect-ratio: 1; max-width: 40px;
+  border-radius: 10px; border: 1px solid var(--border);
+  background: var(--surface); cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1px; transition: all 0.18s ease; position: relative;
+}
+.day:hover { border-color: var(--border-strong); transform: scale(1.06); }
+.day .dnum { font-size: 0.72rem; font-weight: 700; }
+.day .dlabel { font-size: 0.56rem; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.04em; }
+.day.filled { background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; color: #fff; }
+.day.filled .dlabel { color: rgba(255,255,255,0.85); }
+.day.today { outline: 2px solid var(--accent); outline-offset: 1px; }
+.day.future { opacity: 0.4; cursor: not-allowed; }
+.day.future:hover { transform: none; }
+
+/* ---------- Progress bar ---------- */
+.progress-wrap { margin-top: 4px; }
+.progress-track { height: 10px; border-radius: 999px; background: var(--surface-2); overflow: hidden; border: 1px solid var(--border); }
+.progress-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); width: 0; transition: width 0.5s cubic-bezier(.2,.8,.2,1); }
+
+/* ---------- Empty state ---------- */
+.empty { text-align: center; padding: 30px 16px; color: var(--text-faint); }
+.empty svg { width: 40px; height: 40px; margin-bottom: 10px; opacity: 0.5; }
+.empty p { font-size: 0.9rem; }
+
+footer { text-align: center; color: var(--text-faint); font-size: 0.82rem; margin-top: 32px; }
+footer b { color: var(--text-dim); }
+
+/* toast */
+#toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--surface-solid); border: 1px solid var(--border-strong);
+  color: var(--text); padding: 12px 20px; border-radius: 12px;
+  box-shadow: var(--shadow); font-size: 0.9rem; font-weight: 500;
+  opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 50;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+.celebrate {
+  margin-top: 14px; padding: 14px 16px; border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, rgba(52,211,153,0.14), rgba(34,211,238,0.10));
+  border: 1px solid rgba(52,211,153,0.3); display: none; align-items: center; gap: 12px;
+  animation: pop 0.4s ease;
+}
+.celebrate.show { display: flex; }
+.celebrate .em { font-size: 1.6rem; }
+.celebrate .txt { font-weight: 600; font-size: 0.95rem; }
+.celebrate .txt span { display: block; color: var(--text-dim); font-weight: 500; font-size: 0.83rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>
+      </div>
+      <div class="greeting">
+        <h1 id="greet">Hello</h1>
+        <p id="dateline"></p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme"></button>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <section class="stats">
+    <div class="card stat">
+      <div class="ring">
+        <svg width="72" height="72" viewBox="0 0 72 72">
+          <circle cx="36" cy="36" r="30" fill="none" stroke="var(--surface-2)" stroke-width="8"/>
+          <circle id="ringFill" cx="36" cy="36" r="30" fill="none" stroke="url(#g1)" stroke-width="8"
+            stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="188.5" transform="rotate(-90 36 36)"/>
+          <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#7c5cff"/><stop offset="100%" stop-color="#22d3ee"/>
+          </linearGradient></defs>
+          <text id="ringPct" x="36" y="41" text-anchor="middle" font-size="16" font-weight="800" fill="var(--text)" font-family="Sora">0%</text>
+        </svg>
+      </div>
+      <div class="stat-body">
+        <div class="label">Today's progress</div>
+        <div class="value" id="doneCount">0/0</div>
+        <div class="sub">tasks completed</div>
+      </div>
+    </div>
+
+    <div class="card stat">
+      <div class="stat-icon i-fire">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>
+      </div>
+      <div class="stat-body">
+        <div class="label">Best habit streak</div>
+        <div class="value" id="bestStreak">0</div>
+        <div class="sub">days in a row</div>
+      </div>
+    </div>
+
+    <div class="card stat">
+      <div class="stat-icon i-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      </div>
+      <div class="stat-body">
+        <div class="label">Habits on track today</div>
+        <div class="value" id="habitToday">0/0</div>
+        <div class="sub">checked in</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <!-- Tasks -->
+    <div class="card panel">
+      <div class="panel-head">
+        <h2><span class="dot"></span> Daily Tasks</h2>
+        <span class="count-pill" id="taskPill">0 left</span>
+      </div>
+      <div class="add-row">
+        <input id="taskInput" type="text" placeholder="Add a task and press Enter…" maxlength="120" />
+        <button class="btn-add" id="addTaskBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Add
+        </button>
+      </div>
+      <div class="progress-wrap" style="margin-bottom:16px;">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+      <div class="celebrate" id="celebrate">
+        <span class="em">🎉</span>
+        <div class="txt">All tasks done!<span>Amazing work — enjoy the rest of your day.</span></div>
+      </div>
+      <div class="list" id="taskList"></div>
+    </div>
+
+    <!-- Habits -->
+    <div class="card panel">
+      <div class="panel-head">
+        <h2><span class="dot" style="background:var(--accent-2)"></span> Habit Tracker</h2>
+        <span class="count-pill" id="habitPill">0</span>
+      </div>
+      <div class="add-row">
+        <input id="habitInput" type="text" placeholder="New habit (e.g. 💧 Drink water)…" maxlength="60" />
+        <button class="btn-add" id="addHabitBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Add
+        </button>
+      </div>
+      <div class="list" id="habitList"></div>
+    </div>
+  </div>
+
+  <footer>Everything is saved automatically in your browser · <b>Momentum</b></footer>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- storage ----------
+  var KEY = "momentum.dashboard.v1";
+  var DAY_MS = 86400000;
+
+  function todayKey(d) {
+    d = d || new Date();
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+
+  function uid() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  }
+
+  var defaultState = {
+    theme: "dark",
+    tasksDate: todayKey(),
+    tasks: [
+      { id: uid(), text: "Make the bed", done: false },
+      { id: uid(), text: "Review today's calendar", done: false },
+      { id: uid(), text: "Deep work block (90 min)", done: false },
+      { id: uid(), text: "Inbox to zero", done: false },
+      { id: uid(), text: "Move your body / workout", done: false },
+      { id: uid(), text: "Plan tomorrow", done: false },
+      { id: uid(), text: "Tidy workspace", done: false }
+    ],
+    habits: [
+      { id: uid(), emoji: "💧", name: "Drink water", history: {} },
+      { id: uid(), emoji: "📖", name: "Read 20 minutes", history: {} },
+      { id: uid(), emoji: "🧘", name: "Meditate", history: {} },
+      { id: uid(), emoji: "🚶", name: "10k steps", history: {} }
+    ]
+  };
+
+  var state;
+  try {
+    state = JSON.parse(localStorage.getItem(KEY)) || null;
+  } catch (e) { state = null; }
+  if (!state) state = JSON.parse(JSON.stringify(defaultState));
+
+  // reset tasks' done flags on a new day (keep the task definitions)
+  if (state.tasksDate !== todayKey()) {
+    state.tasksDate = todayKey();
+    (state.tasks || []).forEach(function (t) { t.done = false; });
+  }
+
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  // ---------- elements ----------
+  var $ = function (id) { return document.getElementById(id); };
+  var taskList = $("taskList"), habitList = $("habitList");
+
+  // ---------- header ----------
+  function refreshHeader() {
+    var h = new Date().getHours();
+    var g = h < 5 ? "Good night" : h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+    $("greet").textContent = g + " 👋";
+    $("dateline").textContent = new Date().toLocaleDateString(undefined, {
+      weekday: "long", month: "long", day: "numeric", year: "numeric"
+    });
+  }
+
+  // ---------- theme ----------
+  var sunIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  var moonIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>';
+  function applyTheme() {
+    document.documentElement.setAttribute("data-theme", state.theme);
+    $("themeBtn").innerHTML = state.theme === "dark" ? sunIcon : moonIcon;
+  }
+  $("themeBtn").addEventListener("click", function () {
+    state.theme = state.theme === "dark" ? "light" : "dark";
+    applyTheme(); save();
+  });
+
+  // ---------- toast ----------
+  var toastTimer;
+  function toast(msg) {
+    var t = $("toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove("show"); }, 1900);
+  }
+
+  // ---------- icons ----------
+  var checkSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+  var editSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>';
+  var delSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>';
+  var fireSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>';
+
+  // ---------- streak calc ----------
+  function streakOf(habit) {
+    var streak = 0;
+    var d = new Date();
+    // if today not done, start counting from yesterday so an unbroken past streak still shows
+    if (!habit.history[todayKey(d)]) d = new Date(d.getTime() - DAY_MS);
+    for (var i = 0; i < 3650; i++) {
+      if (habit.history[todayKey(d)]) { streak++; d = new Date(d.getTime() - DAY_MS); }
+      else break;
+    }
+    return streak;
+  }
+
+  // ---------- render tasks ----------
+  function renderTasks() {
+    taskList.innerHTML = "";
+    var tasks = state.tasks;
+    if (!tasks.length) {
+      taskList.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><p>No tasks yet — add your first one above.</p></div>';
+    }
+    tasks.forEach(function (t) {
+      var el = document.createElement("div");
+      el.className = "item" + (t.done ? " done" : "");
+      var cb = document.createElement("button");
+      cb.className = "check"; cb.setAttribute("aria-label", "Toggle task");
+      cb.innerHTML = checkSvg;
+      cb.addEventListener("click", function () { toggleTask(t.id); });
+
+      var span = document.createElement("div");
+      span.className = "item-txt"; span.textContent = t.text;
+
+      var actions = document.createElement("div");
+      actions.className = "item-actions";
+      var edit = document.createElement("button");
+      edit.className = "mini-btn"; edit.innerHTML = editSvg; edit.title = "Edit";
+      edit.addEventListener("click", function () { editTask(t.id); });
+      var del = document.createElement("button");
+      del.className = "mini-btn del"; del.innerHTML = delSvg; del.title = "Delete";
+      del.addEventListener("click", function () { deleteTask(t.id); });
+      actions.appendChild(edit); actions.appendChild(del);
+
+      el.appendChild(cb); el.appendChild(span); el.appendChild(actions);
+      taskList.appendChild(el);
+    });
+    updateStats();
+  }
+
+  function toggleTask(id) {
+    var t = state.tasks.find(function (x) { return x.id === id; });
+    if (!t) return;
+    t.done = !t.done; save(); renderTasks();
+  }
+  function editTask(id) {
+    var t = state.tasks.find(function (x) { return x.id === id; });
+    if (!t) return;
+    var v = prompt("Edit task", t.text);
+    if (v !== null && v.trim()) { t.text = v.trim(); save(); renderTasks(); }
+  }
+  function deleteTask(id) {
+    state.tasks = state.tasks.filter(function (x) { return x.id !== id; });
+    save(); renderTasks(); toast("Task removed");
+  }
+  function addTask() {
+    var inp = $("taskInput"); var v = inp.value.trim();
+    if (!v) return;
+    state.tasks.push({ id: uid(), text: v, done: false });
+    inp.value = ""; save(); renderTasks(); toast("Task added");
+  }
+
+  // ---------- render habits ----------
+  function last7Days() {
+    var arr = [], now = new Date();
+    for (var i = 6; i >= 0; i--) arr.push(new Date(now.getTime() - i * DAY_MS));
+    return arr;
+  }
+  var dayLabels = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+
+  function renderHabits() {
+    habitList.innerHTML = "";
+    if (!state.habits.length) {
+      habitList.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg><p>No habits yet — start building one above.</p></div>';
+    }
+    var tk = todayKey();
+    state.habits.forEach(function (h) {
+      var el = document.createElement("div");
+      el.className = "habit";
+      var streak = streakOf(h);
+
+      var top = document.createElement("div");
+      top.className = "habit-top";
+      top.innerHTML =
+        '<div class="habit-emoji">' + (h.emoji || "✅") + '</div>' +
+        '<div class="habit-info"><div class="habit-name"></div>' +
+        '<div class="habit-streak">' + fireSvg + '<span>' + streak + ' day streak</span></div></div>';
+      top.querySelector(".habit-name").textContent = h.name;
+
+      var del = document.createElement("button");
+      del.className = "mini-btn del"; del.innerHTML = delSvg; del.title = "Delete habit";
+      del.style.opacity = "0.6";
+      del.addEventListener("click", function () {
+        state.habits = state.habits.filter(function (x) { return x.id !== h.id; });
+        save(); renderHabits(); toast("Habit removed");
+      });
+      top.appendChild(del);
+
+      var week = document.createElement("div");
+      week.className = "week";
+      last7Days().forEach(function (d) {
+        var key = todayKey(d);
+        var cell = document.createElement("div");
+        cell.className = "day" + (h.history[key] ? " filled" : "") + (key === tk ? " today" : "");
+        cell.innerHTML = '<span class="dnum">' + d.getDate() + '</span><span class="dlabel">' + dayLabels[d.getDay()] + '</span>';
+        cell.addEventListener("click", function () {
+          if (h.history[key]) delete h.history[key]; else h.history[key] = true;
+          save(); renderHabits();
+        });
+        week.appendChild(cell);
+      });
+
+      el.appendChild(top); el.appendChild(week);
+      habitList.appendChild(el);
+    });
+    updateStats();
+  }
+
+  function addHabit() {
+    var inp = $("habitInput"); var raw = inp.value.trim();
+    if (!raw) return;
+    // pull a leading emoji if present
+    var emoji = "✅", name = raw;
+    var m = raw.match(/^(\p{Extended_Pictographic}(?:️)?)\s*(.*)$/u);
+    if (m && m[2]) { emoji = m[1]; name = m[2]; }
+    state.habits.push({ id: uid(), emoji: emoji, name: name, history: {} });
+    inp.value = ""; save(); renderHabits(); toast("Habit added");
+  }
+
+  // ---------- stats ----------
+  function updateStats() {
+    var total = state.tasks.length;
+    var done = state.tasks.filter(function (t) { return t.done; }).length;
+    var pct = total ? Math.round((done / total) * 100) : 0;
+
+    $("doneCount").textContent = done + "/" + total;
+    $("ringPct").textContent = pct + "%";
+    var circ = 188.5;
+    $("ringFill").style.strokeDashoffset = circ - (circ * pct) / 100;
+    $("progressFill").style.width = pct + "%";
+    var left = total - done;
+    $("taskPill").textContent = left === 0 && total > 0 ? "All done ✓" : left + " left";
+
+    var cel = $("celebrate");
+    if (total > 0 && done === total) cel.classList.add("show"); else cel.classList.remove("show");
+
+    var tk = todayKey();
+    var hToday = state.habits.filter(function (h) { return h.history[tk]; }).length;
+    $("habitToday").textContent = hToday + "/" + state.habits.length;
+    $("habitPill").textContent = state.habits.length + (state.habits.length === 1 ? " habit" : " habits");
+
+    var best = 0;
+    state.habits.forEach(function (h) { best = Math.max(best, streakOf(h)); });
+    $("bestStreak").textContent = best;
+  }
+
+  // ---------- wire up ----------
+  $("addTaskBtn").addEventListener("click", addTask);
+  $("taskInput").addEventListener("keydown", function (e) { if (e.key === "Enter") addTask(); });
+  $("addHabitBtn").addEventListener("click", addHabit);
+  $("habitInput").addEventListener("keydown", function (e) { if (e.key === "Enter") addHabit(); });
+
+  applyTheme();
+  refreshHeader();
+  renderTasks();
+  renderHabits();
+  save();
+  setInterval(refreshHeader, 60000);
+})();
+</script>
+</body>
+</html>
