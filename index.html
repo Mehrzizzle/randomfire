@@ -23,6 +23,7 @@
   --accent: #7c5cff;
   --accent-2: #22d3ee;
   --good: #34d399;
+  --fire: #fb923c;
   --warn: #fbbf24;
   --danger: #f87171;
   --shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.7);
@@ -37,10 +38,13 @@
   --surface-2: rgba(255, 255, 255, 0.95);
   --surface-solid: #ffffff;
   --border: rgba(15, 23, 42, 0.08);
-  --border-strong: rgba(15, 23, 42, 0.14);
+  --border-strong: rgba(15, 23, 42, 0.16);
   --text: #10162a;
   --text-dim: #55607a;
   --text-faint: #97a0b6;
+  --accent-2: #0891b2;
+  --good: #059669;
+  --fire: #ea580c;
   --shadow: 0 20px 50px -24px rgba(30, 41, 90, 0.35);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -120,6 +124,9 @@ header {
   position: relative; overflow: hidden;
 }
 .stat .ring { flex-shrink: 0; }
+.ring svg { display: block; }
+.ring svg.ring-done { filter: drop-shadow(0 0 10px rgba(124, 92, 255, 0.65)); }
+#ringSegs path { transition: stroke 0.3s ease; }
 .stat-body .label { color: var(--text-dim); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
 .stat-body .value { font-family: 'Sora', sans-serif; font-size: 1.9rem; font-weight: 800; line-height: 1.1; margin-top: 2px; }
 .stat-body .sub { color: var(--text-faint); font-size: 0.82rem; margin-top: 2px; }
@@ -128,9 +135,8 @@ header {
   display: grid; place-items: center;
 }
 .stat-icon svg { width: 26px; height: 26px; }
-.i-fire { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
+.i-fire { background: rgba(251, 146, 60, 0.15); color: var(--fire); }
 .i-check { background: rgba(52, 211, 153, 0.15); color: var(--good); }
-.i-cal { background: rgba(34, 211, 238, 0.15); color: var(--accent-2); }
 
 /* ---------- Layout ---------- */
 .grid {
@@ -139,6 +145,7 @@ header {
   gap: 20px;
   align-items: start;
 }
+.col { display: flex; flex-direction: column; gap: 20px; }
 @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
 
 .panel { padding: 22px 24px 26px; }
@@ -154,7 +161,7 @@ header {
 .count-pill {
   font-size: 0.82rem; color: var(--text-dim); font-weight: 600;
   background: var(--surface-2); border: 1px solid var(--border);
-  padding: 4px 12px; border-radius: 999px;
+  padding: 4px 12px; border-radius: 999px; white-space: nowrap;
 }
 
 /* ---------- Add row ---------- */
@@ -232,7 +239,7 @@ header {
 }
 .habit-info { flex: 1; min-width: 0; }
 .habit-name { font-weight: 600; font-size: 0.97rem; }
-.habit-streak { font-size: 0.8rem; color: #fb923c; font-weight: 600; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
+.habit-streak { font-size: 0.8rem; color: var(--fire); font-weight: 600; display: flex; align-items: center; gap: 4px; margin-top: 2px; }
 .habit-streak svg { width: 13px; height: 13px; }
 .week { display: flex; gap: 6px; }
 .day {
@@ -248,8 +255,33 @@ header {
 .day.filled { background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; color: #fff; }
 .day.filled .dlabel { color: rgba(255,255,255,0.85); }
 .day.today { outline: 2px solid var(--accent); outline-offset: 1px; }
-.day.future { opacity: 0.4; cursor: not-allowed; }
-.day.future:hover { transform: none; }
+
+/* ---------- Growth Garden ---------- */
+.garden { display: flex; gap: 18px; align-items: center; }
+.plant-box {
+  width: 158px; flex-shrink: 0;
+  filter: drop-shadow(0 12px 22px rgba(16, 185, 129, 0.18));
+}
+.plant-box svg { width: 100%; height: auto; display: block; animation: grow 0.7s cubic-bezier(.2,.9,.3,1.2); }
+@keyframes grow { from { opacity: 0; transform: scale(0.85) translateY(8px); } to { opacity: 1; transform: none; } }
+.sway { transform-origin: 100px 180px; animation: sway 5.5s ease-in-out infinite alternate; }
+@keyframes sway { from { transform: rotate(-1.3deg); } to { transform: rotate(1.3deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .sway { animation: none; }
+  .plant-box svg { animation: none; }
+}
+.garden-info { flex: 1; min-width: 0; }
+.stage-name { font-family: 'Sora', sans-serif; font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+.stage-step { font-size: 0.78rem; color: var(--text-faint); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+.stage-sub { color: var(--text-dim); font-size: 0.88rem; margin: 6px 0 12px; line-height: 1.45; }
+.garden-meta { display: flex; gap: 14px; margin-top: 12px; flex-wrap: wrap; }
+.garden-meta .chip {
+  font-size: 0.8rem; font-weight: 600; color: var(--text-dim);
+  background: var(--surface-2); border: 1px solid var(--border);
+  padding: 5px 11px; border-radius: 999px; display: flex; align-items: center; gap: 5px;
+}
+.progress-track.garden-track .progress-fill { background: linear-gradient(90deg, #10b981, var(--good)); }
+@media (max-width: 480px) { .garden { flex-direction: column; } .plant-box { width: 180px; } }
 
 /* ---------- Progress bar ---------- */
 .progress-wrap { margin-top: 4px; }
@@ -275,7 +307,7 @@ footer b { color: var(--text-dim); }
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 .celebrate {
-  margin-top: 14px; padding: 14px 16px; border-radius: var(--radius-sm);
+  margin-top: 2px; margin-bottom: 14px; padding: 14px 16px; border-radius: var(--radius-sm);
   background: linear-gradient(135deg, rgba(52,211,153,0.14), rgba(34,211,238,0.10));
   border: 1px solid rgba(52,211,153,0.3); display: none; align-items: center; gap: 12px;
   animation: pop 0.4s ease;
@@ -284,6 +316,10 @@ footer b { color: var(--text-dim); }
 .celebrate .em { font-size: 1.6rem; }
 .celebrate .txt { font-weight: 600; font-size: 0.95rem; }
 .celebrate .txt span { display: block; color: var(--text-dim); font-weight: 500; font-size: 0.83rem; }
+
+/* gradient stops follow the theme */
+#g1 stop:nth-child(1) { stop-color: var(--accent); }
+#g1 stop:nth-child(2) { stop-color: var(--accent-2); }
 </style>
 </head>
 <body>
@@ -307,20 +343,18 @@ footer b { color: var(--text-dim); }
   <section class="stats">
     <div class="card stat">
       <div class="ring">
-        <svg width="72" height="72" viewBox="0 0 72 72">
-          <circle cx="36" cy="36" r="30" fill="none" stroke="var(--surface-2)" stroke-width="8"/>
-          <circle id="ringFill" cx="36" cy="36" r="30" fill="none" stroke="url(#g1)" stroke-width="8"
-            stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="188.5" transform="rotate(-90 36 36)"/>
+        <svg id="ringSvg" width="76" height="76" viewBox="0 0 72 72">
           <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#7c5cff"/><stop offset="100%" stop-color="#22d3ee"/>
+            <stop offset="0%"/><stop offset="100%"/>
           </linearGradient></defs>
-          <text id="ringPct" x="36" y="41" text-anchor="middle" font-size="16" font-weight="800" fill="var(--text)" font-family="Sora">0%</text>
+          <g id="ringSegs"></g>
+          <text id="ringPct" x="36" y="41" text-anchor="middle" font-size="15" font-weight="800" fill="var(--text)" font-family="Sora, sans-serif">0%</text>
         </svg>
       </div>
       <div class="stat-body">
         <div class="label">Today's progress</div>
         <div class="value" id="doneCount">0/0</div>
-        <div class="sub">tasks completed</div>
+        <div class="sub">one segment per task</div>
       </div>
     </div>
 
@@ -370,19 +404,42 @@ footer b { color: var(--text-dim); }
       <div class="list" id="taskList"></div>
     </div>
 
-    <!-- Habits -->
-    <div class="card panel">
-      <div class="panel-head">
-        <h2><span class="dot" style="background:var(--accent-2)"></span> Habit Tracker</h2>
-        <span class="count-pill" id="habitPill">0</span>
+    <div class="col">
+      <!-- Habits -->
+      <div class="card panel">
+        <div class="panel-head">
+          <h2><span class="dot" style="background:var(--accent-2)"></span> Habit Tracker</h2>
+          <span class="count-pill" id="habitPill">0</span>
+        </div>
+        <div class="add-row">
+          <input id="habitInput" type="text" placeholder="New habit (e.g. 💧 Drink water)…" maxlength="60" />
+          <button class="btn-add" id="addHabitBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Add
+          </button>
+        </div>
+        <div class="list" id="habitList"></div>
       </div>
-      <div class="add-row">
-        <input id="habitInput" type="text" placeholder="New habit (e.g. 💧 Drink water)…" maxlength="60" />
-        <button class="btn-add" id="addHabitBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg> Add
-        </button>
+
+      <!-- Growth Garden -->
+      <div class="card panel">
+        <div class="panel-head">
+          <h2><span class="dot" style="background:var(--good)"></span> Growth Garden</h2>
+          <span class="count-pill" id="gardenPill">Seed</span>
+        </div>
+        <div class="garden">
+          <div class="plant-box" id="plantBox" role="img" aria-label="Your growth plant"></div>
+          <div class="garden-info">
+            <div class="stage-step" id="stageStep">Stage 1 of 7</div>
+            <div class="stage-name" id="stageName">Seed</div>
+            <div class="stage-sub" id="stageSub">Every habit check-in helps your plant grow.</div>
+            <div class="progress-track garden-track"><div class="progress-fill" id="gardenFill"></div></div>
+            <div class="garden-meta">
+              <span class="chip" id="chipTotal">🌱 0 check-ins</span>
+              <span class="chip" id="chipStreak">🔥 best streak 0</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="list" id="habitList"></div>
     </div>
   </div>
 
@@ -411,6 +468,7 @@ footer b { color: var(--text-dim); }
   var defaultState = {
     theme: "dark",
     tasksDate: todayKey(),
+    gardenStage: 0,
     tasks: [
       { id: uid(), text: "Make the bed", done: false },
       { id: uid(), text: "Review today's calendar", done: false },
@@ -433,6 +491,7 @@ footer b { color: var(--text-dim); }
     state = JSON.parse(localStorage.getItem(KEY)) || null;
   } catch (e) { state = null; }
   if (!state) state = JSON.parse(JSON.stringify(defaultState));
+  if (typeof state.gardenStage !== "number") state.gardenStage = 0;
 
   // reset tasks' done flags on a new day (keep the task definitions)
   if (state.tasksDate !== todayKey()) {
@@ -476,7 +535,52 @@ footer b { color: var(--text-dim); }
     var t = $("toast");
     t.textContent = msg; t.classList.add("show");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { t.classList.remove("show"); }, 1900);
+    toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2200);
+  }
+
+  // ---------- confetti ----------
+  function confettiBurst() {
+    if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    var c = document.createElement("canvas");
+    c.style.cssText = "position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:100";
+    document.body.appendChild(c);
+    var ctx = c.getContext("2d");
+    var W = c.width = innerWidth, H = c.height = innerHeight;
+    var colors = ["#7c5cff", "#22d3ee", "#34d399", "#fbbf24", "#fb7185", "#a78bfa"];
+    var parts = [];
+    for (var i = 0; i < 170; i++) {
+      parts.push({
+        x: W / 2 + (Math.random() - 0.5) * W * 0.35,
+        y: H * 0.38,
+        vx: (Math.random() - 0.5) * 15,
+        vy: -(Math.random() * 13 + 5),
+        w: 6 + Math.random() * 6,
+        h: 8 + Math.random() * 8,
+        r: Math.random() * Math.PI,
+        vr: (Math.random() - 0.5) * 0.3,
+        color: colors[i % colors.length],
+        shape: Math.random() < 0.3 ? "circle" : "rect"
+      });
+    }
+    var start = null;
+    function tick(now) {
+      if (start === null) start = now;
+      var t = now - start;
+      ctx.clearRect(0, 0, W, H);
+      var fade = Math.max(0, 1 - t / 2600);
+      parts.forEach(function (p) {
+        p.vy += 0.25; p.x += p.vx; p.y += p.vy; p.vx *= 0.99; p.r += p.vr;
+        ctx.save();
+        ctx.translate(p.x, p.y); ctx.rotate(p.r);
+        ctx.globalAlpha = fade;
+        ctx.fillStyle = p.color;
+        if (p.shape === "circle") { ctx.beginPath(); ctx.arc(0, 0, p.w / 2, 0, 7); ctx.fill(); }
+        else ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      });
+      if (t < 2600) requestAnimationFrame(tick); else c.remove();
+    }
+    requestAnimationFrame(tick);
   }
 
   // ---------- icons ----------
@@ -496,6 +600,55 @@ footer b { color: var(--text-dim); }
       else break;
     }
     return streak;
+  }
+
+  // ---------- segmented progress ring ----------
+  function polar(cx, cy, r, deg) {
+    var a = (deg - 90) * Math.PI / 180;
+    return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+  }
+  function arcPath(cx, cy, r, a0, a1) {
+    var s = polar(cx, cy, r, a0), e = polar(cx, cy, r, a1);
+    var large = (a1 - a0) > 180 ? 1 : 0;
+    return "M" + s[0].toFixed(2) + " " + s[1].toFixed(2) +
+      " A" + r + " " + r + " 0 " + large + " 1 " + e[0].toFixed(2) + " " + e[1].toFixed(2);
+  }
+  var SVG_NS = "http://www.w3.org/2000/svg";
+  function ringSeg(d, on, cap) {
+    var p = document.createElementNS(SVG_NS, "path");
+    p.setAttribute("d", d);
+    p.setAttribute("fill", "none");
+    p.setAttribute("stroke-width", "8");
+    p.setAttribute("stroke-linecap", cap);
+    if (on) p.setAttribute("stroke", "url(#g1)");
+    else p.style.stroke = "var(--border-strong)";
+    return p;
+  }
+  function drawRing(done, total) {
+    var g = $("ringSegs");
+    g.innerHTML = "";
+    var cx = 36, cy = 36, r = 30;
+    if (!total) {
+      var full = document.createElementNS(SVG_NS, "circle");
+      full.setAttribute("cx", cx); full.setAttribute("cy", cy); full.setAttribute("r", r);
+      full.setAttribute("fill", "none"); full.setAttribute("stroke-width", "8");
+      full.style.stroke = "var(--border-strong)";
+      g.appendChild(full);
+      return;
+    }
+    if (total > 18) {
+      // too many tasks for segments — continuous arc
+      g.appendChild(ringSeg(arcPath(cx, cy, r, 0, 359.9), false, "butt"));
+      var pct = done / total;
+      if (pct > 0) g.appendChild(ringSeg(arcPath(cx, cy, r, 0, Math.max(1, pct * 359.9)), true, "round"));
+      return;
+    }
+    var seg = 360 / total;
+    var gap = total > 1 ? Math.min(18, Math.max(12, 84 / total)) : 0;
+    for (var i = 0; i < total; i++) {
+      var a0 = i * seg + gap / 2, a1 = (i + 1) * seg - gap / 2;
+      g.appendChild(ringSeg(arcPath(cx, cy, r, a0, a1), i < done, total > 1 ? "round" : "butt"));
+    }
   }
 
   // ---------- render tasks ----------
@@ -621,22 +774,173 @@ footer b { color: var(--text-dim); }
     inp.value = ""; save(); renderHabits(); toast("Habit added");
   }
 
+  // ---------- Growth Garden ----------
+  var STAGES = [
+    { min: 0,   name: "Seed",             emoji: "🌰", hint: "Plant your first check-ins and watch life begin." },
+    { min: 5,   name: "Sprout",           emoji: "🌱", hint: "It's alive! Keep showing up each day." },
+    { min: 12,  name: "Seedling",         emoji: "🌿", hint: "Roots are taking hold. Consistency is compounding." },
+    { min: 25,  name: "Sapling",          emoji: "🪴", hint: "Standing tall now — your habits are becoming who you are." },
+    { min: 45,  name: "Young Tree",       emoji: "🌳", hint: "Real strength. Your discipline is visible from afar." },
+    { min: 70,  name: "Mighty Tree",      emoji: "🌳", hint: "Deep roots, wide branches. This is mastery in motion." },
+    { min: 100, name: "Flourishing Tree", emoji: "🌸", hint: "In full bloom. You've built something truly beautiful." }
+  ];
+
+  // Shared SVG bits
+  var PLANT_DEFS =
+    '<defs>' +
+    '<linearGradient id="grassG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4ade80"/><stop offset="100%" stop-color="#16a34a"/></linearGradient>' +
+    '<linearGradient id="leafG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#6ee7b7"/><stop offset="100%" stop-color="#10b981"/></linearGradient>' +
+    '<radialGradient id="canopyG" cx="0.4" cy="0.35" r="0.9"><stop offset="0%" stop-color="#4ade80"/><stop offset="100%" stop-color="#059669"/></radialGradient>' +
+    '<linearGradient id="trunkG" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#7c4a1e"/><stop offset="100%" stop-color="#b45309"/></linearGradient>' +
+    '<linearGradient id="seedG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d97706"/><stop offset="100%" stop-color="#92400e"/></linearGradient>' +
+    '</defs>';
+  var GROUND =
+    '<ellipse cx="100" cy="186" rx="62" ry="9" fill="rgba(0,0,0,0.16)"/>' +
+    '<path d="M42 184 Q100 160 158 184 Z" fill="url(#grassG)"/>';
+  function sparkle(x, y, s) {
+    return '<path d="M' + x + ' ' + (y - s) + ' L' + (x + s * 0.35) + ' ' + (y - s * 0.35) +
+      ' L' + (x + s) + ' ' + y + ' L' + (x + s * 0.35) + ' ' + (y + s * 0.35) +
+      ' L' + x + ' ' + (y + s) + ' L' + (x - s * 0.35) + ' ' + (y + s * 0.35) +
+      ' L' + (x - s) + ' ' + y + ' L' + (x - s * 0.35) + ' ' + (y - s * 0.35) + ' Z" fill="#fde68a"/>';
+  }
+  function plantSvg(stage) {
+    var body = "";
+    if (stage === 0) {
+      body =
+        '<ellipse cx="100" cy="174" rx="10" ry="13" fill="url(#seedG)"/>' +
+        '<path d="M100 163 Q96 169 100 174 Q104 179 100 185" stroke="#78350f" stroke-width="1.5" fill="none"/>' +
+        sparkle(126, 150, 5) + sparkle(76, 158, 3.5);
+    } else if (stage === 1) {
+      body =
+        '<g class="sway">' +
+        '<path d="M100 182 C100 170 99 160 100 150" stroke="#16a34a" stroke-width="4.5" fill="none" stroke-linecap="round"/>' +
+        '<path d="M100 160 Q80 155 74 137 Q94 140 100 156 Z" fill="url(#leafG)"/>' +
+        '<path d="M100 152 Q120 147 126 129 Q106 132 100 148 Z" fill="url(#leafG)"/>' +
+        '</g>';
+    } else if (stage === 2) {
+      body =
+        '<g class="sway">' +
+        '<path d="M100 182 C100 165 99 145 100 124" stroke="#16a34a" stroke-width="5" fill="none" stroke-linecap="round"/>' +
+        '<path d="M100 168 Q78 163 71 144 Q93 147 100 164 Z" fill="url(#leafG)"/>' +
+        '<path d="M100 158 Q122 152 129 133 Q107 137 100 154 Z" fill="url(#leafG)"/>' +
+        '<path d="M100 144 Q80 139 74 121 Q95 124 100 140 Z" fill="url(#leafG)"/>' +
+        '<circle cx="100" cy="120" r="7" fill="url(#leafG)"/>' +
+        '</g>';
+    } else if (stage === 3) {
+      body =
+        '<path d="M96.5 184 C96.5 162 98 142 100 116 C102 142 103.5 162 103.5 184 Z" fill="url(#trunkG)"/>' +
+        '<g class="sway">' +
+        '<circle cx="100" cy="104" r="25" fill="url(#canopyG)"/>' +
+        '<circle cx="80" cy="116" r="16" fill="url(#canopyG)"/>' +
+        '<circle cx="120" cy="116" r="16" fill="url(#canopyG)"/>' +
+        '</g>';
+    } else if (stage === 4) {
+      body =
+        '<path d="M95 184 C95 155 97 132 100 102 C103 132 105 155 105 184 Z" fill="url(#trunkG)"/>' +
+        '<path d="M99 132 C91 124 85 118 80 109 L84 106 C90 114 96 121 102 128 Z" fill="url(#trunkG)"/>' +
+        '<path d="M101 122 C109 114 115 108 120 99 L116 96 C110 104 104 111 98 118 Z" fill="url(#trunkG)"/>' +
+        '<g class="sway">' +
+        '<circle cx="100" cy="86" r="30" fill="url(#canopyG)"/>' +
+        '<circle cx="72" cy="102" r="19" fill="url(#canopyG)"/>' +
+        '<circle cx="128" cy="102" r="19" fill="url(#canopyG)"/>' +
+        '</g>';
+    } else {
+      // stages 5 & 6 share the big tree; 6 adds blossoms, fruit & sparkles
+      body =
+        '<path d="M93 184 C93 152 96 128 100 96 C104 128 107 152 107 184 Z" fill="url(#trunkG)"/>' +
+        '<path d="M98 130 C88 121 80 114 74 104 L79 100 C86 110 94 118 102 126 Z" fill="url(#trunkG)"/>' +
+        '<path d="M102 118 C112 109 120 102 126 92 L121 88 C114 98 106 106 98 114 Z" fill="url(#trunkG)"/>' +
+        '<g class="sway">' +
+        '<circle cx="100" cy="74" r="34" fill="url(#canopyG)"/>' +
+        '<circle cx="66" cy="94" r="22" fill="url(#canopyG)"/>' +
+        '<circle cx="134" cy="94" r="22" fill="url(#canopyG)"/>' +
+        '<circle cx="80" cy="56" r="17" fill="url(#canopyG)"/>' +
+        '<circle cx="120" cy="56" r="17" fill="url(#canopyG)"/>';
+      if (stage >= 6) {
+        body +=
+          '<circle cx="86" cy="72" r="4.5" fill="#fb7185"/>' +
+          '<circle cx="115" cy="86" r="4.5" fill="#fb7185"/>' +
+          '<circle cx="100" cy="52" r="4.5" fill="#fb7185"/>' +
+          '<circle cx="68" cy="90" r="4" fill="#fda4af"/>' +
+          '<circle cx="132" cy="76" r="4" fill="#fda4af"/>' +
+          '<circle cx="124" cy="60" r="4" fill="#fb7185"/>';
+      }
+      body += '</g>';
+      if (stage >= 6) body += sparkle(150, 44, 6) + sparkle(52, 60, 4.5) + sparkle(142, 120, 4);
+    }
+    return '<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">' + PLANT_DEFS + GROUND + body + '</svg>';
+  }
+
+  function growthPoints() {
+    var total = 0;
+    state.habits.forEach(function (h) {
+      total += Object.keys(h.history).length;
+    });
+    return total;
+  }
+  function stageFor(points) {
+    var s = 0;
+    for (var i = 0; i < STAGES.length; i++) if (points >= STAGES[i].min) s = i;
+    return s;
+  }
+
+  function renderGarden() {
+    var pts = growthPoints();
+    var idx = stageFor(pts);
+    var st = STAGES[idx];
+    var next = STAGES[idx + 1] || null;
+
+    $("plantBox").innerHTML = plantSvg(idx);
+    $("stageStep").textContent = "Stage " + (idx + 1) + " of " + STAGES.length;
+    $("stageName").innerHTML = "";
+    $("stageName").textContent = st.name + " " + st.emoji;
+    $("gardenPill").textContent = st.name;
+
+    if (next) {
+      var span = next.min - st.min;
+      var into = pts - st.min;
+      $("gardenFill").style.width = Math.round((into / span) * 100) + "%";
+      $("stageSub").textContent = st.hint + " " + (next.min - pts) + " more check-in" + (next.min - pts === 1 ? "" : "s") + " to reach " + next.name + ".";
+    } else {
+      $("gardenFill").style.width = "100%";
+      $("stageSub").textContent = st.hint;
+    }
+
+    var best = 0;
+    state.habits.forEach(function (h) { best = Math.max(best, streakOf(h)); });
+    $("chipTotal").textContent = "🌱 " + pts + " check-in" + (pts === 1 ? "" : "s");
+    $("chipStreak").textContent = "🔥 best streak " + best;
+
+    // celebrate stage-ups (persisted, so it only fires on genuinely new growth)
+    if (idx > state.gardenStage) {
+      state.gardenStage = idx; save();
+      toast(st.emoji + " Your plant grew into a " + st.name + "!");
+      confettiBurst();
+    } else if (idx < state.gardenStage) {
+      state.gardenStage = idx; save();
+    }
+  }
+
   // ---------- stats ----------
+  var prevAllDone = null; // null = not yet initialized (don't celebrate on load)
   function updateStats() {
     var total = state.tasks.length;
     var done = state.tasks.filter(function (t) { return t.done; }).length;
     var pct = total ? Math.round((done / total) * 100) : 0;
 
     $("doneCount").textContent = done + "/" + total;
-    $("ringPct").textContent = pct + "%";
-    var circ = 188.5;
-    $("ringFill").style.strokeDashoffset = circ - (circ * pct) / 100;
+    $("ringPct").textContent = total ? pct + "%" : "—";
+    drawRing(done, total);
+    var allDone = total > 0 && done === total;
+    $("ringSvg").classList.toggle("ring-done", allDone);
     $("progressFill").style.width = pct + "%";
     var left = total - done;
-    $("taskPill").textContent = left === 0 && total > 0 ? "All done ✓" : left + " left";
+    $("taskPill").textContent = allDone ? "All done ✓" : left + " left";
 
     var cel = $("celebrate");
-    if (total > 0 && done === total) cel.classList.add("show"); else cel.classList.remove("show");
+    if (allDone) cel.classList.add("show"); else cel.classList.remove("show");
+    if (allDone && prevAllDone === false) confettiBurst();
+    prevAllDone = allDone;
 
     var tk = todayKey();
     var hToday = state.habits.filter(function (h) { return h.history[tk]; }).length;
@@ -646,6 +950,8 @@ footer b { color: var(--text-dim); }
     var best = 0;
     state.habits.forEach(function (h) { best = Math.max(best, streakOf(h)); });
     $("bestStreak").textContent = best;
+
+    renderGarden();
   }
 
   // ---------- wire up ----------
