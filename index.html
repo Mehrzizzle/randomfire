@@ -397,33 +397,40 @@ footer b { color: var(--text-dim); }
 .wk-row.dragging .wk-task-col { background: transparent; }
 
 /* ---------- Streaks page ---------- */
-.streak-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 16px; }
-.stk-card { padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
-.stk-top { display: flex; align-items: center; gap: 14px; }
-.stk-plant { width: 78px; flex-shrink: 0; filter: drop-shadow(0 6px 12px rgba(16,185,129,0.2)); }
-.stk-plant svg { width: 100%; height: auto; display: block; }
-.stk-info { flex: 1; min-width: 0; }
-.stk-name { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1rem; word-break: break-word; }
-.stk-stage { font-size: 0.76rem; color: var(--text-faint); font-weight: 600; margin-top: 2px; }
-.stk-flame { font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--fire); white-space: nowrap; }
-.stk-flame span { font-size: 0.75rem; font-weight: 700; display: block; text-align: right; color: var(--text-faint); }
-.stk-stats { display: flex; gap: 8px; }
-.stk-stat {
-  flex: 1; text-align: center; background: var(--surface-2); border: 1px solid var(--border);
-  border-radius: 11px; padding: 8px 4px;
+.tabs button { display: inline-flex; align-items: center; gap: 7px; }
+.tabs button svg { width: 15px; height: 15px; flex-shrink: 0; }
+.streaks-head { margin: 6px 0 22px; }
+.streaks-head h2 { font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
+.streaks-head p { color: var(--text-dim); font-size: 0.93rem; margin-top: 5px; max-width: 560px; line-height: 1.55; }
+.streak-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 16px; }
+.stk-card { padding: 22px 24px 20px; display: flex; flex-direction: column; }
+.stk-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.stk-title { min-width: 0; }
+.stk-name { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; word-break: break-word; }
+.stk-stage { font-size: 0.7rem; color: var(--text-faint); font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; margin-top: 5px; }
+.stk-streak { display: flex; align-items: baseline; gap: 6px; flex-shrink: 0; }
+.stk-streak svg { width: 15px; height: 15px; color: var(--text-faint); align-self: center; }
+.stk-streak .n { font-family: 'Sora', sans-serif; font-size: 1.9rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+.stk-streak .u { font-size: 0.68rem; color: var(--text-faint); font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
+.stk-progress { margin-top: 16px; }
+.stk-progress .progress-track { height: 4px; border: none; background: var(--surface-2); }
+.stk-progress .progress-fill { background: var(--accent); transition: width 0.4s ease; }
+.stk-metrics {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border);
 }
-.stk-stat .v { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.05rem; }
-.stk-stat .l { font-size: 0.66rem; color: var(--text-faint); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 1px; }
-.dotstrip { display: flex; gap: 4px; align-items: center; }
-.dotstrip .d { flex: 1; height: 16px; border-radius: 5px; background: var(--surface-2); border: 1px solid var(--border); }
-.dotstrip .d.on { background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; }
-.dotstrip .d.miss { background: rgba(248, 113, 113, 0.15); border-color: rgba(248,113,113,0.25); }
-.dotstrip .d.off { opacity: 0.3; }
-.dotstrip .d.today { outline: 2px solid var(--accent); outline-offset: 1px; }
-.strip-label { font-size: 0.7rem; color: var(--text-faint); font-weight: 600; margin-top: 4px; display: flex; justify-content: space-between; }
-.streaks-head { margin: 6px 0 16px; }
-.streaks-head h2 { font-family: 'Sora', sans-serif; font-size: 1.4rem; font-weight: 800; }
-.streaks-head p { color: var(--text-dim); font-size: 0.92rem; margin-top: 4px; }
+.stk-metrics > div { text-align: left; }
+.stk-metrics > div + div { border-left: 1px solid var(--border); padding-left: 16px; }
+.stk-metrics .v { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.05rem; font-variant-numeric: tabular-nums; display: block; }
+.stk-metrics .l { font-size: 0.64rem; color: var(--text-faint); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; display: block; }
+.stk-heat { margin-top: 18px; }
+.hm { display: grid; grid-template-rows: repeat(7, 10px); grid-auto-flow: column; grid-auto-columns: 10px; gap: 3px; }
+.hm span { width: 10px; height: 10px; border-radius: 2.5px; background: var(--surface-2); }
+.hm span.y { background: var(--accent); }
+.hm span.o { opacity: 0.22; }
+.hm span.t { outline: 1.5px solid var(--accent-2); outline-offset: 1px; }
+.hm span.f { visibility: hidden; }
+.hm-label { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.66rem; color: var(--text-faint); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
 
 /* ---------- AI Coach ---------- */
 .coach-sub { color: var(--text-dim); font-size: 0.88rem; line-height: 1.5; margin-bottom: 14px; }
@@ -475,9 +482,9 @@ footer b { color: var(--text-dim); }
   </header>
 
   <nav class="tabs" id="tabsNav">
-    <button data-tab="home" class="active">📋 Dashboard</button>
-    <button data-tab="streaks">🔥 Streaks</button>
-    <button data-tab="rise">⚡ Rise</button>
+    <button data-tab="home" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</button>
+    <button data-tab="streaks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>Streaks</button>
+    <button data-tab="rise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>Rise</button>
   </nav>
 
   <!-- ================= DASHBOARD ================= -->
@@ -1322,56 +1329,58 @@ footer b { color: var(--text-dim); }
   }
   function renderStreaksPage() {
     var root = $("tab-streaks");
-    var h = '<div class="streaks-head"><h2>🔥 Streak Tracker</h2>' +
-      "<p>One seedling per area of your life. Every completion waters it — watch each one grow into its own tree.</p></div>";
+    var h = '<div class="streaks-head"><h2>Streaks</h2>' +
+      "<p>Your consistency record, area by area. Each grid is the last 16 weeks of execution — the record doesn't lie, and every day is a chance to add to it.</p></div>";
     if (!state.tasks.length) {
       root.innerHTML = h + '<div class="card panel"><div class="empty"><p>No tasks yet — add some on the Dashboard and your trackers will appear here.</p></div></div>';
       return;
     }
     root.innerHTML = h + '<div class="streak-grid" id="streakGrid"></div>';
     var grid = $("streakGrid");
-    var tk = dateKey(new Date());
-    state.tasks.forEach(function (t, idx) {
+    var now = new Date();
+    var tk = dateKey(now);
+    var WEEKS = 16;
+    var monThisWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - wd(now));
+    var start = new Date(monThisWeek.getTime() - (WEEKS - 1) * 7 * DAY_MS);
+
+    state.tasks.forEach(function (t) {
       var cur = streakOf(t);
       var best = bestStreakOf(t);
       var total = totalDone(t);
       var cons = consistency28(t);
       var stage = miniStageFor(total);
       var next = MINI_STAGES[stage + 1];
+      var stageMin = MINI_STAGES[stage];
+      var pct = next ? Math.round(((total - stageMin) / (next - stageMin)) * 100) : 100;
+
+      var cells = "";
+      for (var w = 0; w < WEEKS; w++) {
+        for (var dow = 0; dow < 7; dow++) {
+          var d = new Date(start.getTime() + (w * 7 + dow) * DAY_MS);
+          var k = dateKey(d);
+          var cls = "";
+          if (d > now && k !== tk) cls = "f";
+          else if (!t.days[wd(d)]) cls = "o";
+          else if (isDone(t, k)) cls = "y";
+          if (k === tk) cls += " t";
+          cells += '<span class="' + cls + '" title="' + k + '"></span>';
+        }
+      }
 
       var card = document.createElement("div");
       card.className = "card stk-card";
-
-      var strip = "";
-      var d = new Date(Date.now() - 13 * DAY_MS);
-      for (var i = 0; i < 14; i++) {
-        var k = dateKey(d);
-        var cls = "d";
-        if (!t.days[wd(d)]) cls += " off";
-        else if (isDone(t, k)) cls += " on";
-        else if (k !== tk) cls += " miss";
-        if (k === tk) cls += " today";
-        strip += '<span class="' + cls + '" title="' + k + '"></span>';
-        d = new Date(d.getTime() + DAY_MS);
-      }
-
-      // crop the 200x200 canvas so the plant fills the small tile, and make
-      // gradient ids unique per card (duplicate ids resolve into hidden tabs and paint black)
-      var mini = plantSvg(stage)
-        .replace('viewBox="0 0 200 200"', 'viewBox="35 35 130 160"')
-        .replace(/(grassG|leafG|canopyG|trunkG|seedG)/g, "$1_s" + idx);
       card.innerHTML =
-        '<div class="stk-top">' +
-        '<div class="stk-plant">' + mini + "</div>" +
-        '<div class="stk-info"><div class="stk-name"></div>' +
-        '<div class="stk-stage">' + esc(STAGES[stage].name) + (next ? " · " + (next - total) + " to next stage" : " · fully grown!") + "</div></div>" +
-        '<div class="stk-flame">🔥 ' + cur + "<span>day streak</span></div></div>" +
-        '<div class="stk-stats">' +
-        '<div class="stk-stat"><div class="v">' + best + '</div><div class="l">Best streak</div></div>' +
-        '<div class="stk-stat"><div class="v">' + total + '</div><div class="l">Completions</div></div>' +
-        '<div class="stk-stat"><div class="v">' + cons + '%</div><div class="l">Last 28 days</div></div></div>' +
-        '<div><div class="dotstrip">' + strip + "</div>" +
-        '<div class="strip-label"><span>2 weeks ago</span><span>today</span></div></div>';
+        '<div class="stk-head">' +
+        '<div class="stk-title"><div class="stk-name"></div>' +
+        '<div class="stk-stage">' + esc(STAGES[stage].name) + (next ? " · " + (next - total) + " to next level" : " · max level") + "</div></div>" +
+        '<div class="stk-streak">' + fireSvg + '<span class="n">' + cur + '</span><span class="u">day<br>streak</span></div></div>' +
+        '<div class="stk-progress"><div class="progress-track"><div class="progress-fill" style="width:' + pct + '%"></div></div></div>' +
+        '<div class="stk-metrics">' +
+        '<div><span class="v">' + best + '</span><span class="l">Best streak</span></div>' +
+        '<div><span class="v">' + total + '</span><span class="l">Completions</span></div>' +
+        '<div><span class="v">' + cons + '%</span><span class="l">28-day rate</span></div></div>' +
+        '<div class="stk-heat"><div class="hm">' + cells + "</div>" +
+        '<div class="hm-label"><span>' + WEEKS + ' weeks ago</span><span>This week</span></div></div>';
       card.querySelector(".stk-name").textContent = t.text;
       grid.appendChild(card);
     });
@@ -1565,13 +1574,19 @@ footer b { color: var(--text-dim); }
     { n: "The Pursuit of Happyness", by: "Chris Gardner",
       why: "Homeless with a toddler, sleeping in subway bathrooms, and still showing up to an unpaid internship in his one suit. The rawest street-level comeback ever written — from rock bottom to owning a brokerage firm. Read this when you feel you have nothing.",
       link: "https://www.goodreads.com/search?q=the+pursuit+of+happyness+chris+gardner" },
+    { n: "Can't Hurt Me", by: "David Goggins",
+      why: "An abused kid, 300 pounds, spraying roaches in a dead-end job — who willed himself into a Navy SEAL and the hardest ultra-endurance athlete alive. The manual for building an unbreakable mind. Read this when you've gone soft on yourself and know it.",
+      link: "https://www.goodreads.com/search?q=can%27t+hurt+me+goggins" },
+    { n: "The Autobiography of Malcolm X", by: "Malcolm X with Alex Haley",
+      why: "From street hustler to a prison cell — where he copied out the entire dictionary by hand — to one of the most electrifying voices in history. The ultimate proof that a person can completely remake themselves. Read this when you think it's too late to change.",
+      link: "https://www.goodreads.com/search?q=autobiography+of+malcolm+x" },
     { n: "Open", by: "Andre Agassi",
       why: "A champion who fell to #141 in the world — washed up, written off, hair and confidence gone — then rebuilt himself point by point back to #1, winning more after the collapse than before it. Read this when you've lost your edge and doubt you can get it back.",
       link: "https://www.goodreads.com/search?q=open+andre+agassi" }
   ];
   var BOOKS = [
     ["Man's Search for Meaning", "Viktor Frankl — meaning in the worst of it", "https://www.goodreads.com/search?q=man%27s+search+for+meaning+frankl"],
-    ["Can't Hurt Me", "David Goggins — master your mind, defy the odds", "https://www.goodreads.com/search?q=can%27t+hurt+me+goggins"],
+    ["Atomic Habits", "James Clear — the engineering manual for what you're building here", "https://www.goodreads.com/search?q=atomic+habits+james+clear"],
     ["Meditations", "Marcus Aurelius — the original resilience manual", "https://www.goodreads.com/search?q=meditations+marcus+aurelius"],
     ["The Obstacle Is the Way", "Ryan Holiday — turn trials into triumph", "https://www.goodreads.com/search?q=the+obstacle+is+the+way+ryan+holiday"],
     ["Grit", "Angela Duckworth — passion + perseverance beats talent", "https://www.goodreads.com/search?q=grit+angela+duckworth"],
@@ -1598,7 +1613,7 @@ footer b { color: var(--text-dim); }
         '<div class="phase risen"><b>The rise</b>' + esc(s.rise) + "</div>" +
         "<blockquote>“" + esc(s.q) + "”<footer>— " + esc(s.n) + "</footer></blockquote></div>";
     }).join("") + "</div>";
-    h += '<div class="rise-sec-title">📖 Top 3 autobiographies to read first</div>' +
+    h += '<div class="rise-sec-title">📖 Top 5 autobiographies to read first</div>' +
       '<div class="rise-sec-sub">Not biographies about them — their own words, from inside the fall and the climb back. In this order.</div>';
     h += '<div class="top3">' + AUTOBIOS.map(function (b, i) {
       return '<div class="card bio"><div class="rankbadge">#' + (i + 1) + "</div>" +
@@ -1637,8 +1652,8 @@ footer b { color: var(--text-dim); }
     window.scrollTo({ top: 0 });
   }
   $("tabsNav").addEventListener("click", function (e) {
-    var t = e.target.getAttribute && e.target.getAttribute("data-tab");
-    if (t) switchTab(t);
+    var btn = e.target.closest ? e.target.closest("[data-tab]") : null;
+    if (btn) switchTab(btn.getAttribute("data-tab"));
   });
 
   // ============ boot ============
