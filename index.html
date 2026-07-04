@@ -184,8 +184,8 @@ header { display: flex; align-items: flex-start; justify-content: space-between;
 .item-txt { font-size: 0.96rem; font-weight: 500; word-break: break-word; transition: color 0.2s; }
 .item.done .item-txt { color: var(--text-faint); text-decoration: line-through; }
 .item-meta { display: flex; align-items: center; gap: 10px; margin-top: 3px; flex-wrap: wrap; }
-.streak-chip { font-size: 0.76rem; color: var(--fire); font-weight: 700; display: inline-flex; align-items: center; gap: 3px; }
-.streak-chip svg { width: 12px; height: 12px; }
+.streak-chip { font-size: 0.74rem; color: var(--text-faint); font-weight: 600; display: inline-flex; align-items: center; gap: 3px; }
+.streak-chip svg { width: 11px; height: 11px; }
 .note-chip { font-size: 0.8rem; color: var(--accent-2); font-weight: 500; display: inline-flex; align-items: center; gap: 4px; min-width: 0; }
 .note-chip svg { width: 12px; height: 12px; flex-shrink: 0; }
 .item-actions { display: flex; gap: 2px; opacity: 0; transition: opacity 0.2s; }
@@ -434,15 +434,39 @@ footer b { color: var(--text-dim); }
 
 /* ---------- AI Coach ---------- */
 .coach-sub { color: var(--text-dim); font-size: 0.88rem; line-height: 1.5; margin-bottom: 14px; }
-.coach-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.coach-sub a { color: var(--accent-2); font-weight: 600; text-decoration: none; }
+.coach-sub a:hover { text-decoration: underline; }
 .coach-btn {
   border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
-  font-family: inherit; font-weight: 600; font-size: 0.85rem; padding: 12px 10px;
-  border-radius: 12px; cursor: pointer; transition: all 0.18s; text-align: left; line-height: 1.35;
+  font-family: inherit; font-weight: 600; font-size: 0.87rem; padding: 12px 14px;
+  border-radius: 12px; cursor: pointer; transition: all 0.18s; text-align: center; width: 100%;
 }
-.coach-btn:hover { border-color: var(--accent); transform: translateY(-2px); background: var(--surface-solid); }
-.coach-btn .em { display: block; font-size: 1.2rem; margin-bottom: 4px; }
-.coach-note { font-size: 0.75rem; color: var(--text-faint); margin-top: 12px; line-height: 1.5; }
+.coach-btn:hover { border-color: var(--accent); background: var(--surface-solid); }
+.coach-note { font-size: 0.74rem; color: var(--text-faint); margin-top: 10px; line-height: 1.5; }
+.coach-note a { color: var(--text-dim); cursor: pointer; text-decoration: underline; }
+.chat {
+  height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+  padding: 2px 2px 6px; margin-bottom: 10px; scroll-behavior: smooth;
+}
+.msg {
+  max-width: 86%; padding: 9px 13px; border-radius: 14px;
+  font-size: 0.88rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word;
+}
+.msg.me { align-self: flex-end; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; border-bottom-right-radius: 4px; }
+.msg.ai { align-self: flex-start; background: var(--surface-2); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+.msg.err { align-self: flex-start; background: rgba(248, 113, 113, 0.1); border: 1px solid rgba(248, 113, 113, 0.3); color: var(--danger); font-size: 0.82rem; }
+.typing { align-self: flex-start; display: flex; gap: 4px; padding: 12px 14px; }
+.typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); animation: blink 1.2s infinite; }
+.typing i:nth-child(2) { animation-delay: 0.2s; }
+.typing i:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink { 0%, 60%, 100% { opacity: 0.25; } 30% { opacity: 1; } }
+.chat-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.chip-btn {
+  border: 1px solid var(--border); background: var(--surface-2); color: var(--text-dim);
+  font-family: inherit; font-weight: 600; font-size: 0.76rem; padding: 6px 12px;
+  border-radius: 999px; cursor: pointer; transition: all 0.15s;
+}
+.chip-btn:hover { border-color: var(--accent); color: var(--text); }
 
 /* ---------- Rise top-3 autobiographies ---------- */
 .top3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 6px; }
@@ -571,7 +595,7 @@ footer b { color: var(--text-dim); }
       <!-- Tasks -->
       <div class="card panel">
         <div class="panel-head">
-          <h2><span class="dot"></span> My Tasks</h2>
+          <h2>My Tasks</h2>
           <div class="head-right">
             <span class="datechip" id="datechip"></span>
             <div class="seg" id="viewSeg">
@@ -598,7 +622,7 @@ footer b { color: var(--text-dim); }
         <!-- Growth Garden -->
         <div class="card panel">
           <div class="panel-head">
-            <h2><span class="dot" style="background:var(--good)"></span> Growth Garden</h2>
+            <h2>Growth Garden</h2>
             <span class="datechip" id="gardenPill">Seed</span>
           </div>
           <div class="garden">
@@ -609,10 +633,9 @@ footer b { color: var(--text-dim); }
               <div class="stage-sub" id="stageSub">Every completed task helps your plant grow.</div>
               <div class="progress-track garden-track"><div class="progress-fill" id="gardenFill"></div></div>
               <div class="garden-meta">
-                <span class="chip" id="chipTotal">🌱 0 completions</span>
-                <span class="chip" id="chipStreak">🔥 best streak 0</span>
+                <span class="chip" id="chipTotal">0 completions</span>
+                <span class="chip" id="chipStreak">best streak 0</span>
               </div>
-              <div class="stage-ladder" id="stageLadder"></div>
             </div>
           </div>
         </div>
@@ -620,20 +643,10 @@ footer b { color: var(--text-dim); }
         <!-- AI Coach -->
         <div class="card panel">
           <div class="panel-head">
-            <h2><span class="dot" style="background:var(--warn)"></span> AI Coach</h2>
-            <div class="seg" id="coachSeg">
-              <button data-ai="claude">Claude</button>
-              <button data-ai="chatgpt">ChatGPT</button>
-            </div>
+            <h2>AI Coach</h2>
+            <span class="datechip" id="coachStatus">Not connected</span>
           </div>
-          <p class="coach-sub">Your personal coach already knows your streaks, today's tasks, and your tree — every button below carries your live stats into the chat.</p>
-          <div class="coach-btns">
-            <button class="coach-btn" data-mode="kickoff"><span class="em">🌅</span>Morning kickoff</button>
-            <button class="coach-btn" data-mode="struggling"><span class="em">🆘</span>I'm struggling today</button>
-            <button class="coach-btn" data-mode="review"><span class="em">📊</span>Review my week</button>
-            <button class="coach-btn" data-mode="win"><span class="em">🎉</span>Celebrate a win</button>
-          </div>
-          <p class="coach-note">Opens a chat in your own Claude or ChatGPT account (free, nothing to set up). Your data stays in your browser — only the summary you see in the prompt is shared.</p>
+          <div id="coachBody"></div>
         </div>
       </div>
     </div>
@@ -1117,7 +1130,7 @@ footer b { color: var(--text-dim); }
       var mid = document.createElement("div");
       mid.className = "item-mid";
       var meta = "";
-      if (streak > 0) meta += '<span class="streak-chip">' + fireSvg + streak + ' day' + (streak === 1 ? "" : "s") + '</span>';
+      if (streak >= 2) meta += '<span class="streak-chip">' + fireSvg + streak + ' days</span>';
       if (r && r.note) meta += '<span class="note-chip">' + noteSvg + '<span>' + esc(r.note) + '</span></span>';
       mid.innerHTML = '<div class="item-txt"></div>' + (meta ? '<div class="item-meta">' + meta + '</div>' : "");
       mid.querySelector(".item-txt").textContent = t.text;
@@ -1186,7 +1199,7 @@ footer b { color: var(--text-dim); }
       nm.addEventListener("click", function () { editTaskModal(t.id); });
       tc.appendChild(nm);
       var streak = streakOf(t);
-      if (streak > 0) {
+      if (streak >= 2) {
         var sc = document.createElement("span");
         sc.className = "streak-chip"; sc.innerHTML = fireSvg + streak;
         tc.appendChild(sc);
@@ -1273,8 +1286,7 @@ footer b { color: var(--text-dim); }
     '<linearGradient id="seedG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#d97706"/><stop offset="100%" stop-color="#92400e"/></linearGradient>' +
     '</defs>';
   var GROUND =
-    '<ellipse cx="100" cy="186" rx="62" ry="9" fill="rgba(0,0,0,0.16)"/>' +
-    '<path d="M42 184 Q100 160 158 184 Z" fill="url(#grassG)"/>';
+    '<rect x="58" y="183" width="84" height="2.5" rx="1.25" fill="rgba(134, 146, 176, 0.35)"/>';
   function sparkle(x, y, s) {
     return '<path d="M' + x + ' ' + (y - s) + ' L' + (x + s * 0.35) + ' ' + (y - s * 0.35) +
       ' L' + (x + s) + ' ' + y + ' L' + (x + s * 0.35) + ' ' + (y + s * 0.35) +
@@ -1363,17 +1375,8 @@ footer b { color: var(--text-dim); }
       $("gardenFill").style.width = "100%";
       $("stageSub").textContent = st.hint;
     }
-    $("chipTotal").textContent = "🌱 " + pts + " completion" + (pts === 1 ? "" : "s");
-    $("chipStreak").textContent = "🔥 best streak " + bestStreak;
-
-    var lad = $("stageLadder"); lad.innerHTML = "";
-    STAGES.forEach(function (s, i) {
-      var r = document.createElement("div");
-      r.className = "rung" + (i < idx ? " reached" : "") + (i === idx ? " current" : "");
-      r.innerHTML = '<span class="r-ico">' + (i < idx ? "✅" : i === idx ? s.emoji : "🔒") + "</span>" +
-        "<span>" + esc(s.name) + "</span><span class=\"r-pts\">" + s.min + "+</span>";
-      lad.appendChild(r);
-    });
+    $("chipTotal").textContent = pts + " completion" + (pts === 1 ? "" : "s");
+    $("chipStreak").textContent = "best streak " + bestStreak;
 
     if (idx > state.gardenStage) {
       state.gardenStage = idx; save();
@@ -1435,7 +1438,7 @@ footer b { color: var(--text-dim); }
         '<div class="stk-head">' +
         '<div class="stk-title"><div class="stk-name"></div>' +
         '<div class="stk-stage">' + esc(STAGES[stage].name) + (next ? " · " + (next - total) + " to next level" : " · max level") + "</div></div>" +
-        '<div class="stk-streak">' + fireSvg + '<span class="n">' + cur + '</span><span class="u">day<br>streak</span></div></div>' +
+        '<div class="stk-streak">' + (cur > 0 ? fireSvg : "") + '<span class="n">' + cur + '</span><span class="u">day<br>streak</span></div></div>' +
         '<div class="stk-progress"><div class="progress-track"><div class="progress-fill" style="width:' + pct + '%"></div></div></div>' +
         '<div class="stk-metrics">' +
         '<div><span class="v">' + best + '</span><span class="l">Best streak</span></div>' +
@@ -1518,17 +1521,10 @@ footer b { color: var(--text-dim); }
   }
 
   // ============ AI Coach ============
-  if (state.coach !== "chatgpt" && state.coach !== "claude") state.coach = "claude";
-  function renderCoachSeg() {
-    Array.prototype.forEach.call($("coachSeg").children, function (b) {
-      b.className = b.getAttribute("data-ai") === state.coach ? "active" : "";
-    });
-  }
-  $("coachSeg").addEventListener("click", function (e) {
-    var v = e.target.getAttribute && e.target.getAttribute("data-ai");
-    if (v) { state.coach = v; save(); renderCoachSeg(); }
-  });
-  function coachPrompt(mode) {
+  if (!Array.isArray(state.coachChat)) state.coachChat = [];
+  if (typeof state.coachKey !== "string") state.coachKey = "";
+
+  function statsBlock() {
     var tk = dateKey(new Date());
     var w = wd(new Date());
     var lines = state.tasks.map(function (t) {
@@ -1536,31 +1532,139 @@ footer b { color: var(--text-dim); }
       return "- " + t.text + " — " + status + ", current streak " + streakOf(t) + " days, best " + bestStreakOf(t) + " days";
     }).join("\n");
     var stage = STAGES[stageFor(growthPoints())];
-    var base =
-      "You are my personal growth coach — warm, energizing, direct, and occasionally playful. " +
-      "Your mission: lift me up, hold me accountable, and inspire me like the great comeback stories (Mandela, Rocky, Goggins, Jim Carrey). " +
-      "Keep replies concise and punchy, speak to me by name, and always end with ONE small concrete next step I can do right now.\n\n" +
-      "My name: " + state.name + ".\n" +
-      "Today: " + new Date().toDateString() + ".\n" +
+    return "My name: " + state.name + ".\nToday: " + new Date().toDateString() + ".\n" +
       "My habit dashboard right now:\n" + lines + "\n" +
-      "Growth Garden stage: " + stage.name + " (" + growthPoints() + " total completions).\n\n";
-    var asks = {
-      kickoff: "Give me a powerful 60-second morning kickoff for today's tasks. Fire me up.",
-      struggling: "I'm struggling and low on motivation today. Coach me through it — acknowledge it, then help me find one small win.",
-      review: "Review my week honestly based on my stats above: what's working, what's slipping, and my #1 focus for next week.",
-      win: "I just crushed it — celebrate with me like a proud coach, then help me lock in this momentum for tomorrow."
-    };
-    return base + (asks[mode] || asks.kickoff);
+      "Growth Garden stage: " + stage.name + " (" + growthPoints() + " total completions).";
   }
-  Array.prototype.forEach.call(document.querySelectorAll(".coach-btn"), function (b) {
-    b.addEventListener("click", function () {
-      var q = encodeURIComponent(coachPrompt(b.getAttribute("data-mode")));
-      var url = state.coach === "chatgpt"
-        ? "https://chatgpt.com/?q=" + q
-        : "https://claude.ai/new?q=" + q;
-      window.open(url, "_blank", "noopener");
+  var COACH_PERSONA =
+    "You are my personal growth coach — warm, energizing, direct, and occasionally playful. " +
+    "Your mission: lift me up, hold me accountable, and inspire me like the great comeback stories (Mandela, Rocky, Goggins, Jim Carrey). " +
+    "This is an instant-message chat, so keep replies short — usually 2 to 4 sentences. Speak to me by name sometimes. " +
+    "When giving advice, end with ONE small concrete next step.";
+  function coachSystem() { return COACH_PERSONA + "\n\n" + statsBlock(); }
+  function coachPrompt() {
+    return COACH_PERSONA + "\n\n" + statsBlock() + "\n\nGive me a powerful kickoff for today's tasks.";
+  }
+
+  function chatEl(role, text) {
+    var m = document.createElement("div");
+    m.className = "msg " + role;
+    m.textContent = text;
+    return m;
+  }
+  function renderChatLog() {
+    var log = $("chatLog");
+    if (!log) return;
+    log.innerHTML = "";
+    if (!state.coachChat.length) {
+      log.appendChild(chatEl("ai", "Hey " + state.name + " — I'm your coach, and I can already see your board: your streaks, today's tasks, your tree. What's on your mind?"));
+    }
+    state.coachChat.forEach(function (m) { log.appendChild(chatEl(m.role === "user" ? "me" : "ai", m.content)); });
+    log.scrollTop = log.scrollHeight;
+  }
+  var coachBusy = false;
+  function sendCoach(text) {
+    text = (text || "").trim();
+    if (!text || coachBusy || !state.coachKey) return;
+    coachBusy = true;
+    state.coachChat.push({ role: "user", content: text });
+    if (state.coachChat.length > 40) state.coachChat = state.coachChat.slice(-40);
+    save(); renderChatLog();
+    var log = $("chatLog");
+    var typing = document.createElement("div");
+    typing.className = "typing"; typing.innerHTML = "<i></i><i></i><i></i>";
+    log.appendChild(typing); log.scrollTop = log.scrollHeight;
+    fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": state.coachKey,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-opus-4-8",
+        max_tokens: 800,
+        system: coachSystem(),
+        messages: state.coachChat.slice(-12).map(function (m) { return { role: m.role, content: m.content }; })
+      })
+    }).then(function (r) {
+      return r.json().then(function (j) { return { ok: r.ok, status: r.status, j: j }; });
+    }).then(function (res) {
+      typing.remove(); coachBusy = false;
+      if (!res.ok) {
+        var msg = (res.j && res.j.error && res.j.error.message) || ("Request failed (" + res.status + ")");
+        if (res.status === 401) msg = "That API key was rejected. Disconnect below and reconnect with a fresh key from console.anthropic.com.";
+        log.appendChild(chatEl("err", "⚠ " + msg));
+        log.scrollTop = log.scrollHeight;
+        return;
+      }
+      var reply = ((res.j && res.j.content) || []).filter(function (b) { return b.type === "text"; })
+        .map(function (b) { return b.text; }).join("\n").trim() || "(no reply)";
+      state.coachChat.push({ role: "assistant", content: reply });
+      if (state.coachChat.length > 40) state.coachChat = state.coachChat.slice(-40);
+      save(); renderChatLog();
+    }).catch(function () {
+      typing.remove(); coachBusy = false;
+      log.appendChild(chatEl("err", "⚠ Couldn't reach Claude — check your internet connection and try again."));
+      log.scrollTop = log.scrollHeight;
     });
-  });
+  }
+
+  var CHIPS = [
+    ["Morning kickoff", "Give me a powerful 60-second kickoff for today's tasks. Fire me up."],
+    ["I'm struggling", "I'm struggling and low on motivation today. Coach me through it."],
+    ["Review my week", "Review my week honestly based on my stats: what's working, what's slipping, my #1 focus."],
+    ["Celebrate a win", "I just crushed it — celebrate with me, then help me lock in the momentum."]
+  ];
+
+  function renderCoach() {
+    var body = $("coachBody");
+    $("coachStatus").textContent = state.coachKey ? "Claude · connected" : "Not connected";
+    if (!state.coachKey) {
+      body.innerHTML =
+        '<p class="coach-sub">Chat with Claude as your personal coach, right here — it sees your live streaks and tasks. ' +
+        'Connect once with an API key from <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>. ' +
+        "The key is stored only in this browser.</p>" +
+        '<div class="add-row" style="margin-bottom:10px"><input id="coachKeyInput" type="password" placeholder="Paste your Anthropic API key (sk-ant-…)" autocomplete="off">' +
+        '<button class="btn-add" id="coachConnect">Connect</button></div>' +
+        '<button class="coach-btn" id="coachDeep">💬 No key? Chat in the Claude app instead ↗</button>' +
+        '<p class="coach-note">The app button uses your normal claude.ai login and carries your stats with it — zero setup.</p>';
+      $("coachConnect").addEventListener("click", function () {
+        var k = $("coachKeyInput").value.trim();
+        if (!k) return;
+        state.coachKey = k; save(); renderCoach();
+        toast("Coach connected");
+      });
+      $("coachKeyInput").addEventListener("keydown", function (e) { if (e.key === "Enter") $("coachConnect").click(); });
+      $("coachDeep").addEventListener("click", function () {
+        window.open("https://claude.ai/new?q=" + encodeURIComponent(coachPrompt()), "_blank", "noopener");
+      });
+      return;
+    }
+    body.innerHTML =
+      '<div class="chat" id="chatLog"></div>' +
+      '<div class="chat-chips">' + CHIPS.map(function (c, i) {
+        return '<button class="chip-btn" data-chip="' + i + '">' + esc(c[0]) + "</button>";
+      }).join("") + "</div>" +
+      '<div class="add-row" style="margin-bottom:0"><input id="chatInput" type="text" placeholder="Message your coach…" maxlength="600" autocomplete="off">' +
+      '<button class="btn-add" id="chatSend">Send</button></div>' +
+      '<p class="coach-note">Private: your key and chat stay in this browser. <a id="coachClear">Clear chat</a> · <a id="coachDisconnect">Disconnect</a></p>';
+    renderChatLog();
+    function submit() {
+      var inp = $("chatInput");
+      sendCoach(inp.value); inp.value = "";
+    }
+    $("chatSend").addEventListener("click", submit);
+    $("chatInput").addEventListener("keydown", function (e) { if (e.key === "Enter") submit(); });
+    Array.prototype.forEach.call(body.querySelectorAll(".chip-btn"), function (b) {
+      b.addEventListener("click", function () { sendCoach(CHIPS[+b.getAttribute("data-chip")][1]); });
+    });
+    $("coachClear").addEventListener("click", function () { state.coachChat = []; save(); renderChatLog(); });
+    $("coachDisconnect").addEventListener("click", function () {
+      state.coachKey = ""; save(); renderCoach(); toast("Disconnected");
+    });
+  }
 
   // ============ stats ============
   var prevAllDone = null;
@@ -1809,7 +1913,7 @@ footer b { color: var(--text-dim); }
   applyTheme();
   refreshHeader();
   renderQuote();
-  renderCoachSeg();
+  renderCoach();
   renderTasks();
   if (location.hash === "#rise") switchTab("rise");
   else if (location.hash === "#streaks") switchTab("streaks");
