@@ -492,6 +492,34 @@ footer b { color: var(--text-dim); }
 }
 .chip-btn:hover { border-color: var(--accent); color: var(--text); }
 
+/* ---------- Notes & scratchpad ---------- */
+.notes-panel { margin-top: 20px; }
+.notes-sub { color: var(--text-dim); font-size: 0.85rem; margin: -4px 0 14px; line-height: 1.5; }
+.notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.note {
+  border-radius: 14px; padding: 12px 12px 8px; display: flex; flex-direction: column; gap: 4px;
+  border: 1px solid var(--border); border-top: 3px solid var(--note-c, var(--accent));
+  background: var(--surface-2); animation: pop 0.25s ease;
+}
+.note textarea {
+  width: 100%; min-height: 96px; resize: vertical; border: none; background: transparent;
+  color: var(--text); font-family: inherit; font-size: 0.88rem; line-height: 1.55; outline: none;
+}
+.note textarea::placeholder { color: var(--text-faint); }
+.note-foot { display: flex; align-items: center; gap: 4px; border-top: 1px solid var(--border); padding-top: 6px; }
+.note-time { color: var(--text-faint); font-size: 0.68rem; font-weight: 600; flex: 1; }
+.note-act {
+  border: none; background: transparent; color: var(--text-faint); cursor: pointer;
+  font-family: inherit; font-size: 0.72rem; font-weight: 700; padding: 4px 7px;
+  border-radius: 8px; transition: all 0.15s;
+}
+.note-act:hover { background: var(--surface-solid); color: var(--text); }
+.note-act.coach:hover { color: var(--accent-2); }
+.notes-empty {
+  grid-column: 1 / -1; color: var(--text-faint); font-size: 0.85rem; text-align: center;
+  padding: 22px; border: 1.5px dashed var(--border); border-radius: 14px;
+}
+
 /* ---------- Rise top-3 autobiographies ---------- */
 .top3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 6px; }
 .bio { padding: 20px; position: relative; display: flex; flex-direction: column; gap: 8px; }
@@ -674,6 +702,16 @@ footer b { color: var(--text-dim); }
         </div>
       </div>
     </div>
+
+    <!-- Notes & scratchpad -->
+    <section class="card panel notes-panel">
+      <div class="panel-head">
+        <h2>Notes</h2>
+        <button class="btn-add" id="noteAdd">+ New note</button>
+      </div>
+      <p class="notes-sub">Sticky notes for reminders, journaling, or drafting a message before you send it to your coach.</p>
+      <div class="notes-grid" id="notesGrid"></div>
+    </section>
   </main>
 
   <!-- ================= STREAKS ================= -->
@@ -747,6 +785,7 @@ footer b { color: var(--text-dim); }
   if (state.view !== "week") state.view = state.view === "week" ? "week" : (state.view || "day");
   if (!Array.isArray(state.vision)) state.vision = [];
   if (!Array.isArray(state.visionSeen)) state.visionSeen = [];
+  if (!Array.isArray(state.notes)) state.notes = [];
 
   // Repo-hosted vision images: add entries like {src: "vision/goal.jpg", caption: "..."}
   // and commit the file — they auto-import into everyone's board exactly once.
@@ -1700,6 +1739,63 @@ footer b { color: var(--text-dim); }
     });
   }
 
+  // ============ notes & scratchpad ============
+  var NOTE_COLORS = ["#f59e0b", "#34d399", "#a78bfa", "#fb7185", "#38bdf8"];
+  function noteDate(ts) {
+    try { return new Date(ts).toLocaleDateString(undefined, { month: "short", day: "numeric" }); }
+    catch (e) { return ""; }
+  }
+  function renderNotes() {
+    var grid = $("notesGrid");
+    grid.innerHTML = "";
+    if (!state.notes.length) {
+      grid.innerHTML = '<div class="notes-empty">No notes yet — hit “+ New note” to jot a reminder, journal a thought, or draft something for your coach.</div>';
+      return;
+    }
+    state.notes.forEach(function (n) {
+      var el = document.createElement("div");
+      el.className = "note";
+      el.style.setProperty("--note-c", n.color || NOTE_COLORS[0]);
+      el.innerHTML =
+        '<textarea placeholder="Write anything…"></textarea>' +
+        '<div class="note-foot"><span class="note-time">' + esc(noteDate(n.ts)) + "</span>" +
+        '<button class="note-act coach" title="Load this note into the AI Coach chat">→ Coach</button>' +
+        '<button class="note-act del" title="Delete note">Delete</button></div>';
+      var ta = el.querySelector("textarea");
+      ta.value = n.text || "";
+      var deb;
+      ta.addEventListener("input", function () {
+        n.text = ta.value;
+        clearTimeout(deb); deb = setTimeout(save, 400);
+      });
+      ta.addEventListener("blur", save);
+      el.querySelector(".del").addEventListener("click", function () {
+        state.notes = state.notes.filter(function (x) { return x.id !== n.id; });
+        save(); renderNotes(); toast("Note deleted");
+      });
+      el.querySelector(".coach").addEventListener("click", function () {
+        var text = (n.text || "").trim();
+        if (!text) { toast("This note is empty"); return; }
+        var inp = $("chatInput");
+        if (inp) {
+          inp.value = text.slice(0, 600);
+          inp.focus();
+          inp.scrollIntoView({ behavior: "smooth", block: "center" });
+          toast("Draft loaded — press Send when ready");
+        } else {
+          toast("Connect the AI Coach first, then try again");
+        }
+      });
+      grid.appendChild(el);
+    });
+  }
+  $("noteAdd").addEventListener("click", function () {
+    state.notes.unshift({ id: uid(), text: "", color: NOTE_COLORS[state.notes.length % NOTE_COLORS.length], ts: Date.now() });
+    save(); renderNotes();
+    var ta = $("notesGrid").querySelector("textarea");
+    if (ta) ta.focus();
+  });
+
   // ============ stats ============
   var prevAllDone = null;
   function updateStats() {
@@ -1949,6 +2045,7 @@ footer b { color: var(--text-dim); }
   renderQuote();
   renderCoach();
   renderTasks();
+  renderNotes();
   if (location.hash === "#rise") switchTab("rise");
   else if (location.hash === "#streaks") switchTab("streaks");
   else if (location.hash === "#vision") switchTab("vision");

@@ -24,6 +24,8 @@ saved right in your browser.
 - 🤖 **AI Coach** — a built-in chat window with a personal Claude coach that
   sees your live stats (bring your own API key), plus a one-tap fallback into
   the Claude app for kickoffs, tough days, weekly reviews
+- 📝 **Notes & scratchpad** — sticky notes at the bottom of the dashboard for
+  reminders, journaling, or drafting a message before sending it to your coach
 - ⚡ **Rise tab** — 18 real comeback stories, top-3 autobiographies, quotes,
   affirmations, videos, and books to refuel motivation
 - 🌗 **Dark & light themes**, personalized greeting with a daily quote
