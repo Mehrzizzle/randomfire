@@ -250,27 +250,23 @@ header { display: flex; align-items: flex-start; justify-content: space-between;
 .wcell.off .offdash { color: var(--text-faint); opacity: 0.4; font-weight: 700; margin: auto; }
 .wcell.off:hover .offdash { opacity: 0.8; }
 
-/* ---------- Growth Garden ---------- */
-.garden { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.plant-box { width: min(230px, 70%); filter: drop-shadow(0 12px 22px rgba(16, 185, 129, 0.18)); }
+/* ---------- Growth Garden (compact) ---------- */
+.garden { display: flex; flex-direction: row; align-items: center; gap: 16px; }
+.plant-box { width: 104px; flex-shrink: 0; filter: drop-shadow(0 8px 16px rgba(16, 185, 129, 0.15)); }
 .plant-box svg { width: 100%; height: auto; display: block; animation: grow 0.7s cubic-bezier(.2,.9,.3,1.2); }
 @keyframes grow { from { opacity: 0; transform: scale(0.85) translateY(8px); } to { opacity: 1; transform: none; } }
 .sway { transform-origin: 100px 180px; animation: sway 5.5s ease-in-out infinite alternate; }
 @keyframes sway { from { transform: rotate(-1.3deg); } to { transform: rotate(1.3deg); } }
 @media (prefers-reduced-motion: reduce) { .sway { animation: none; } .plant-box svg { animation: none; } }
-.garden-info { width: 100%; }
-.stage-step { font-size: 0.76rem; color: var(--text-faint); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; text-align: center; }
-.stage-name { font-family: 'Sora', sans-serif; font-size: 1.35rem; font-weight: 800; text-align: center; margin: 2px 0 4px; }
-.stage-sub { color: var(--text-dim); font-size: 0.87rem; line-height: 1.5; text-align: center; margin-bottom: 12px; }
+.garden-info { flex: 1; min-width: 0; }
+.stage-step { font-size: 0.68rem; color: var(--text-faint); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.stage-name { font-family: 'Sora', sans-serif; font-size: 1.1rem; font-weight: 800; margin: 2px 0 3px; }
+.stage-sub { color: var(--text-dim); font-size: 0.8rem; line-height: 1.45; margin-bottom: 9px; }
+.garden-track { height: 5px; border: none; }
 .garden-track .progress-fill { background: linear-gradient(90deg, #10b981, var(--good)); }
-.garden-meta { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; justify-content: center; }
-.garden-meta .chip { font-size: 0.79rem; font-weight: 600; color: var(--text-dim); background: var(--surface-2); border: 1px solid var(--border); padding: 5px 11px; border-radius: 999px; }
-.stage-ladder { width: 100%; margin-top: 16px; display: flex; flex-direction: column; gap: 5px; }
-.rung { display: flex; align-items: center; gap: 10px; padding: 7px 12px; border-radius: 10px; font-size: 0.84rem; color: var(--text-faint); border: 1px solid transparent; }
-.rung .r-ico { width: 20px; text-align: center; }
-.rung .r-pts { margin-left: auto; font-size: 0.75rem; font-weight: 600; }
-.rung.reached { color: var(--text-dim); }
-.rung.current { background: var(--surface-2); border-color: var(--border-strong); color: var(--text); font-weight: 600; }
+.garden-meta { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.garden-meta .chip { font-size: 0.73rem; font-weight: 600; color: var(--text-faint); background: var(--surface-2); border: 1px solid var(--border); padding: 4px 10px; border-radius: 999px; }
+@media (max-width: 480px) { .garden { flex-direction: column; } .plant-box { width: 150px; } .garden-info { width: 100%; } }
 
 /* ---------- Empty / footer / toast ---------- */
 .empty { text-align: center; padding: 28px 16px; color: var(--text-faint); }
@@ -444,10 +440,38 @@ footer b { color: var(--text-dim); }
 .coach-btn:hover { border-color: var(--accent); background: var(--surface-solid); }
 .coach-note { font-size: 0.74rem; color: var(--text-faint); margin-top: 10px; line-height: 1.5; }
 .coach-note a { color: var(--text-dim); cursor: pointer; text-decoration: underline; }
-.chat {
-  height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
-  padding: 2px 2px 6px; margin-bottom: 10px; scroll-behavior: smooth;
+.coach-card {
+  border: 1.5px solid rgba(124, 92, 255, 0.45);
+  box-shadow: 0 0 0 1px rgba(124, 92, 255, 0.08), 0 12px 32px -12px rgba(124, 92, 255, 0.35);
 }
+.chat-frame {
+  border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+  background: var(--surface-solid); display: flex; flex-direction: column;
+}
+.chat-frame-head {
+  display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(124, 92, 255, 0.10), rgba(45, 212, 191, 0.06));
+}
+.coach-avatar {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  display: grid; place-items: center; color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 4px 12px -3px rgba(124, 92, 255, 0.55);
+}
+.cfh-info { flex: 1; min-width: 0; }
+.cfh-name { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 0.92rem; line-height: 1.2; }
+.cfh-sub { color: var(--text-dim); font-size: 0.72rem; margin-top: 1px; }
+.cfh-status { display: flex; align-items: center; gap: 5px; font-size: 0.7rem; font-weight: 700; color: var(--good); text-transform: uppercase; letter-spacing: 0.05em; }
+.cfh-status i { width: 7px; height: 7px; border-radius: 50%; background: var(--good); animation: pulse-dot 2s infinite; }
+@keyframes pulse-dot { 0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5); } 50% { box-shadow: 0 0 0 4px rgba(52, 211, 153, 0); } }
+.chat {
+  height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+  padding: 14px; scroll-behavior: smooth;
+}
+.chat-foot { padding: 10px 12px 12px; border-top: 1px solid var(--border); background: var(--surface); }
+.chat-foot .chat-chips { margin-bottom: 8px; }
+.chat-foot .add-row { margin: 0; }
 .msg {
   max-width: 86%; padding: 9px 13px; border-radius: 14px;
   font-size: 0.88rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word;
@@ -641,7 +665,7 @@ footer b { color: var(--text-dim); }
         </div>
 
         <!-- AI Coach -->
-        <div class="card panel">
+        <div class="card panel coach-card">
           <div class="panel-head">
             <h2>AI Coach</h2>
             <span class="datechip" id="coachStatus">Not connected</span>
@@ -1643,12 +1667,22 @@ footer b { color: var(--text-dim); }
       return;
     }
     body.innerHTML =
-      '<div class="chat" id="chatLog"></div>' +
-      '<div class="chat-chips">' + CHIPS.map(function (c, i) {
-        return '<button class="chip-btn" data-chip="' + i + '">' + esc(c[0]) + "</button>";
-      }).join("") + "</div>" +
-      '<div class="add-row" style="margin-bottom:0"><input id="chatInput" type="text" placeholder="Message your coach…" maxlength="600" autocomplete="off">' +
-      '<button class="btn-add" id="chatSend">Send</button></div>' +
+      '<div class="chat-frame">' +
+        '<div class="chat-frame-head">' +
+          '<span class="coach-avatar"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M9 14h.01M15 14h.01"/></svg></span>' +
+          '<span class="cfh-info"><span class="cfh-name">Your Coach</span>' +
+          '<span class="cfh-sub" style="display:block">Personal AI coach · knows your streaks &amp; tasks</span></span>' +
+          '<span class="cfh-status"><i></i>Online</span>' +
+        "</div>" +
+        '<div class="chat" id="chatLog"></div>' +
+        '<div class="chat-foot">' +
+          '<div class="chat-chips">' + CHIPS.map(function (c, i) {
+            return '<button class="chip-btn" data-chip="' + i + '">' + esc(c[0]) + "</button>";
+          }).join("") + "</div>" +
+          '<div class="add-row"><input id="chatInput" type="text" placeholder="Message your coach…" maxlength="600" autocomplete="off">' +
+          '<button class="btn-add" id="chatSend">Send</button></div>' +
+        "</div>" +
+      "</div>" +
       '<p class="coach-note">Private: your key and chat stay in this browser. <a id="coachClear">Clear chat</a> · <a id="coachDisconnect">Disconnect</a></p>';
     renderChatLog();
     function submit() {

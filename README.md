@@ -21,8 +21,9 @@ saved right in your browser.
   Day and Week views (works on touch too)
 - 🌱 **Streaks tab** — a per-task tracker where each area of your life grows its
   own plant, with current/best streaks, totals, consistency %, and a 14-day strip
-- 🤖 **AI Coach** — one-tap deep links into Claude or ChatGPT that carry your
-  live stats and a coach persona for kickoffs, tough days, weekly reviews
+- 🤖 **AI Coach** — a built-in chat window with a personal Claude coach that
+  sees your live stats (bring your own API key), plus a one-tap fallback into
+  the Claude app for kickoffs, tough days, weekly reviews
 - ⚡ **Rise tab** — 18 real comeback stories, top-3 autobiographies, quotes,
   affirmations, videos, and books to refuel motivation
 - 🌗 **Dark & light themes**, personalized greeting with a daily quote
