@@ -460,6 +460,46 @@ footer b { color: var(--text-dim); }
 .bio a { color: var(--accent-2); font-size: 0.83rem; font-weight: 700; text-decoration: none; margin-top: auto; }
 .bio a:hover { text-decoration: underline; }
 
+/* ---------- Vision board ---------- */
+.vision-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin: 6px 0 20px; }
+.vision-head h2 { font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
+.vision-head p { color: var(--text-dim); font-size: 0.93rem; margin-top: 5px; max-width: 560px; line-height: 1.55; }
+.vision-grid { columns: 270px; column-gap: 14px; }
+.vcard {
+  break-inside: avoid; margin-bottom: 14px; border-radius: 16px; overflow: hidden;
+  background: var(--surface); border: 1px solid var(--border); position: relative;
+  box-shadow: var(--shadow); animation: pop 0.3s ease;
+}
+.vcard img { width: 100%; display: block; }
+.vcap {
+  width: 100%; border: none; background: transparent; color: var(--text);
+  font-family: inherit; font-size: 0.86rem; font-weight: 500; padding: 10px 13px;
+}
+.vcap::placeholder { color: var(--text-faint); }
+.vcap:focus { outline: none; background: var(--surface-2); }
+.vdel {
+  position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; border-radius: 9px;
+  border: none; background: rgba(8, 10, 18, 0.55); color: #fff; cursor: pointer;
+  opacity: 0; transition: opacity 0.2s; display: grid; place-items: center; backdrop-filter: blur(4px);
+}
+.vcard:hover .vdel { opacity: 1; }
+@media (hover: none) { .vdel { opacity: 0.75; } }
+.vdel svg { width: 15px; height: 15px; }
+.vision-add { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.vision-add input { display: none; }
+
+/* ---------- Peale quote wall ---------- */
+.pquotes { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.pq {
+  padding: 20px 22px 16px; font-size: 0.93rem; line-height: 1.65; font-weight: 500;
+  position: relative;
+}
+.pq::before {
+  content: "\201C"; font-family: 'Sora', sans-serif; font-size: 2.6rem; font-weight: 800;
+  color: var(--accent); opacity: 0.35; line-height: 1; display: block; margin-bottom: 2px;
+}
+.pq footer { margin-top: 10px; font-size: 0.76rem; color: var(--text-faint); font-weight: 600; }
+
 #g1 stop:nth-child(1) { stop-color: var(--accent); }
 #g1 stop:nth-child(2) { stop-color: var(--accent-2); }
 </style>
@@ -484,6 +524,7 @@ footer b { color: var(--text-dim); }
   <nav class="tabs" id="tabsNav">
     <button data-tab="home" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Dashboard</button>
     <button data-tab="streaks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>Streaks</button>
+    <button data-tab="vision"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Vision</button>
     <button data-tab="rise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>Rise</button>
   </nav>
 
@@ -601,6 +642,9 @@ footer b { color: var(--text-dim); }
   <!-- ================= STREAKS ================= -->
   <main id="tab-streaks" hidden></main>
 
+  <!-- ================= VISION ================= -->
+  <main id="tab-vision" hidden></main>
+
   <!-- ================= RISE ================= -->
   <main id="tab-rise" hidden></main>
 
@@ -664,8 +708,23 @@ footer b { color: var(--text-dim); }
   else if (!state.version) state = migrateV1(state);
   if (!state.name) state.name = "Mehrzaad";
   if (state.view !== "week") state.view = state.view === "week" ? "week" : (state.view || "day");
+  if (!Array.isArray(state.vision)) state.vision = [];
+  if (!Array.isArray(state.visionSeen)) state.visionSeen = [];
 
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  // Repo-hosted vision images: add entries like {src: "vision/goal.jpg", caption: "..."}
+  // and commit the file — they auto-import into everyone's board exactly once.
+  var PRESET_VISION = [];
+  PRESET_VISION.forEach(function (p) {
+    if (state.visionSeen.indexOf(p.src) === -1) {
+      state.vision.push({ id: uid(), src: p.src, caption: p.caption || "" });
+      state.visionSeen.push(p.src);
+    }
+  });
+
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); return true; }
+    catch (e) { return false; }
+  }
 
   function rec(t, key) { return t.history[key] || null; }
   function isDone(t, key) { var r = rec(t, key); return !!(r && r.done); }
@@ -701,7 +760,10 @@ footer b { color: var(--text-dim); }
     ["Hard times create strong men. You are being forged, not broken.", "Unknown"],
     ["Discipline is choosing between what you want now and what you want most.", "Abraham Lincoln (attr.)"],
     ["The comeback is always stronger than the setback.", "Unknown"],
-    ["Don't count the days. Make the days count.", "Muhammad Ali"]
+    ["Don't count the days. Make the days count.", "Muhammad Ali"],
+    ["Believe in yourself! Have faith in your abilities!", "Norman Vincent Peale"],
+    ["Change your thoughts and you change your world.", "Norman Vincent Peale"],
+    ["Action is a great restorer and builder of confidence.", "Norman Vincent Peale"]
   ];
   var quoteIdx = Math.floor(Date.now() / DAY_MS) % QUOTES.length;
   function renderQuote() {
@@ -1386,6 +1448,75 @@ footer b { color: var(--text-dim); }
     });
   }
 
+  // ============ Vision board ============
+  function addVisionFiles(files) {
+    Array.prototype.forEach.call(files, function (file) {
+      if (!file.type || file.type.indexOf("image/") !== 0) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        var img = new Image();
+        img.onload = function () {
+          var MAX = 1000;
+          var scale = Math.min(1, MAX / Math.max(img.width, img.height));
+          var c = document.createElement("canvas");
+          c.width = Math.max(1, Math.round(img.width * scale));
+          c.height = Math.max(1, Math.round(img.height * scale));
+          var ctx = c.getContext("2d");
+          ctx.fillStyle = "#fff";
+          ctx.fillRect(0, 0, c.width, c.height);
+          ctx.drawImage(img, 0, 0, c.width, c.height);
+          state.vision.push({ id: uid(), src: c.toDataURL("image/jpeg", 0.82), caption: "" });
+          if (!save()) {
+            state.vision.pop(); save();
+            toast("Browser storage is full — that image didn't fit. Try a smaller one.");
+          }
+          renderVisionPage();
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderVisionPage() {
+    var root = $("tab-vision");
+    root.innerHTML =
+      '<div class="vision-head"><div><h2>Vision Board</h2>' +
+      "<p>The life you're building, where you can see it every day. Add images of your goals — the places, the people, the body, the work, the peace — and let them pull you forward.</p></div>" +
+      '<label class="btn-add vision-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add images<input type="file" accept="image/*" multiple id="visionInput"></label></div>' +
+      '<div class="vision-grid" id="visionGrid"></div>';
+    $("visionInput").addEventListener("change", function (e) {
+      addVisionFiles(e.target.files);
+      e.target.value = "";
+    });
+    var grid = $("visionGrid");
+    if (!state.vision.length) {
+      grid.outerHTML = '<div class="card panel"><div class="empty">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>' +
+        "<p>Your board is empty. Tap <b>Add images</b> to start building the picture of where you're going.<br>Images stay in your browser on this device.</p></div></div>";
+      return;
+    }
+    state.vision.forEach(function (v) {
+      var card = document.createElement("div");
+      card.className = "vcard";
+      var img = document.createElement("img");
+      img.src = v.src; img.alt = v.caption || "Vision board image"; img.loading = "lazy";
+      var cap = document.createElement("input");
+      cap.type = "text"; cap.className = "vcap"; cap.maxLength = 90;
+      cap.placeholder = "Add a caption…"; cap.value = v.caption || "";
+      cap.addEventListener("change", function () { v.caption = cap.value.trim(); save(); });
+      var del = document.createElement("button");
+      del.className = "vdel"; del.title = "Remove";
+      del.innerHTML = delSvg;
+      del.addEventListener("click", function () {
+        state.vision = state.vision.filter(function (x) { return x.id !== v.id; });
+        save(); renderVisionPage(); toast("Image removed");
+      });
+      card.appendChild(img); card.appendChild(cap); card.appendChild(del);
+      grid.appendChild(card);
+    });
+  }
+
   // ============ AI Coach ============
   if (state.coach !== "chatgpt" && state.coach !== "claude") state.coach = "claude";
   function renderCoachSeg() {
@@ -1584,7 +1715,18 @@ footer b { color: var(--text-dim); }
       why: "A champion who fell to #141 in the world — washed up, written off, hair and confidence gone — then rebuilt himself point by point back to #1, winning more after the collapse than before it. Read this when you've lost your edge and doubt you can get it back.",
       link: "https://www.goodreads.com/search?q=open+andre+agassi" }
   ];
+  var PEALE = [
+    "Believe in yourself! Have faith in your abilities!",
+    "Change your thoughts and you change your world.",
+    "Action is a great restorer and builder of confidence.",
+    "Become a possibilitarian. No matter how dark things seem to be, raise your sights and see possibilities — always see them, for they're always there.",
+    "Stand up to your obstacles and do something about them. You will find that they haven't half the strength you think they have.",
+    "Empty pockets never held anyone back. Only empty heads and empty hearts can do that.",
+    "Formulate and stamp indelibly on your mind a mental picture of yourself as succeeding.",
+    "Drop the idea that you are Atlas carrying the world on your shoulders."
+  ];
   var BOOKS = [
+    ["The Power of Positive Thinking", "Norman Vincent Peale — the classic the quotes above come from", "https://www.goodreads.com/search?q=the+power+of+positive+thinking+peale"],
     ["Man's Search for Meaning", "Viktor Frankl — meaning in the worst of it", "https://www.goodreads.com/search?q=man%27s+search+for+meaning+frankl"],
     ["Atomic Habits", "James Clear — the engineering manual for what you're building here", "https://www.goodreads.com/search?q=atomic+habits+james+clear"],
     ["Meditations", "Marcus Aurelius — the original resilience manual", "https://www.goodreads.com/search?q=meditations+marcus+aurelius"],
@@ -1621,6 +1763,11 @@ footer b { color: var(--text-dim); }
         "<p>" + esc(b.why) + "</p>" +
         '<a href="' + b.link + '" target="_blank" rel="noopener">Find the book ↗</a></div>';
     }).join("") + "</div>";
+    h += '<div class="rise-sec-title">☀️ The Power of Positive Thinking</div>' +
+      '<div class="rise-sec-sub">A few of Norman Vincent Peale’s most famous lines from his 1952 classic. Pick one each morning and carry it through the day — then read the whole book (it’s in the list below).</div>';
+    h += '<div class="pquotes">' + PEALE.map(function (q) {
+      return '<div class="card pq">' + esc(q) + "<footer>— Norman Vincent Peale</footer></div>";
+    }).join("") + "</div>";
     h += '<div class="rise-sec-title">⛽ Fuel station</div>' +
       '<div class="rise-sec-sub">When reading isn’t enough — watch, listen, absorb.</div>';
     h += '<div class="fuel"><div class="card fuel-card"><h3>🎬 Watch these when you need fire</h3><div class="fuel-list">' +
@@ -1642,12 +1789,14 @@ footer b { color: var(--text-dim); }
   function switchTab(name) {
     $("tab-home").hidden = name !== "home";
     $("tab-streaks").hidden = name !== "streaks";
+    $("tab-vision").hidden = name !== "vision";
     $("tab-rise").hidden = name !== "rise";
     Array.prototype.forEach.call($("tabsNav").children, function (b) {
       b.className = b.getAttribute("data-tab") === name ? "active" : "";
     });
     if (name === "rise" && !$("tab-rise").innerHTML) buildRise();
     if (name === "streaks") renderStreaksPage(); // always fresh — data changes as you check off
+    if (name === "vision" && !$("tab-vision").innerHTML) renderVisionPage();
     try { history.replaceState(null, "", name === "home" ? "#" : "#" + name); } catch (e) {}
     window.scrollTo({ top: 0 });
   }
@@ -1664,6 +1813,7 @@ footer b { color: var(--text-dim); }
   renderTasks();
   if (location.hash === "#rise") switchTab("rise");
   else if (location.hash === "#streaks") switchTab("streaks");
+  else if (location.hash === "#vision") switchTab("vision");
   save();
   setInterval(refreshHeader, 60000);
 })();
