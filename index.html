@@ -493,8 +493,39 @@ footer b { color: var(--text-dim); }
 .chip-btn:hover { border-color: var(--accent); color: var(--text); }
 
 /* ---------- Notes & scratchpad ---------- */
-.notes-panel { margin-top: 20px; }
+.notes-panel { margin-top: 20px; position: relative; display: flex; flex-direction: column; }
+.notes-panel .panel-head, .notes-sub { flex-shrink: 0; }
+.notes-head-right { display: flex; align-items: center; gap: 8px; }
+.notes-head-right .btn-add { height: 34px; font-size: 0.84rem; padding: 0 14px; }
+.notes-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 2px; }
+.win-dots { display: inline-flex; gap: 5px; margin-right: 2px; }
+.win-dots i { width: 9px; height: 9px; border-radius: 50%; opacity: 0.85; }
+.win-dots i:nth-child(1) { background: #fb7185; }
+.win-dots i:nth-child(2) { background: #f59e0b; }
+.win-dots i:nth-child(3) { background: #34d399; }
+.notes-panel.floating {
+  position: fixed; margin: 0; z-index: 90;
+  background: var(--surface-solid);
+  box-shadow: 0 30px 70px -18px rgba(0, 0, 0, 0.55), var(--shadow);
+}
+.notes-panel.floating #notesDrag { cursor: grab; }
+.notes-panel.floating.win-moving #notesDrag { cursor: grabbing; }
+.win-moving, .win-sizing { user-select: none; }
+.win-moving .note textarea, .win-sizing .note textarea { pointer-events: none; }
+#notesDrag { user-select: none; }
+.rz { position: absolute; display: none; z-index: 5; }
+.notes-panel.floating .rz { display: block; }
+.rz-n { top: -5px; left: 12px; right: 12px; height: 10px; cursor: ns-resize; }
+.rz-s { bottom: -5px; left: 12px; right: 12px; height: 10px; cursor: ns-resize; }
+.rz-e { right: -5px; top: 12px; bottom: 12px; width: 10px; cursor: ew-resize; }
+.rz-w { left: -5px; top: 12px; bottom: 12px; width: 10px; cursor: ew-resize; }
+.rz-ne { top: -6px; right: -6px; width: 16px; height: 16px; cursor: nesw-resize; }
+.rz-nw { top: -6px; left: -6px; width: 16px; height: 16px; cursor: nwse-resize; }
+.rz-se { bottom: -6px; right: -6px; width: 16px; height: 16px; cursor: nwse-resize; }
+.rz-sw { bottom: -6px; left: -6px; width: 16px; height: 16px; cursor: nesw-resize; }
 .notes-sub { color: var(--text-dim); font-size: 0.85rem; margin: -4px 0 14px; line-height: 1.5; }
+.float-hint { color: var(--text-faint); }
+.notes-panel:not(.floating) #notesReset, .notes-panel:not(.floating) .float-hint { display: none; }
 .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
 .note {
   border-radius: 14px; padding: 12px 12px 8px; display: flex; flex-direction: column; gap: 4px;
@@ -703,14 +734,21 @@ footer b { color: var(--text-dim); }
       </div>
     </div>
 
-    <!-- Notes & scratchpad -->
-    <section class="card panel notes-panel">
-      <div class="panel-head">
-        <h2>Notes</h2>
-        <button class="btn-add" id="noteAdd">+ New note</button>
+    <!-- Notes & scratchpad (floating window on desktop) -->
+    <section class="card panel notes-panel" id="notesPanel">
+      <div class="panel-head" id="notesDrag">
+        <h2><span class="win-dots"><i></i><i></i><i></i></span>Notes</h2>
+        <div class="notes-head-right">
+          <button class="note-act" id="notesReset" title="Reset window position &amp; size">Reset</button>
+          <button class="btn-add" id="noteAdd">+ New note</button>
+        </div>
       </div>
-      <p class="notes-sub">Sticky notes for reminders, journaling, or drafting a message before you send it to your coach.</p>
-      <div class="notes-grid" id="notesGrid"></div>
+      <p class="notes-sub">Sticky notes for reminders, journaling, or drafting a message for your coach. <span class="float-hint">Drag this header to move the window · pull any edge or corner to resize.</span></p>
+      <div class="notes-scroll"><div class="notes-grid" id="notesGrid"></div></div>
+      <i class="rz rz-n" data-rz="n"></i><i class="rz rz-s" data-rz="s"></i>
+      <i class="rz rz-e" data-rz="e"></i><i class="rz rz-w" data-rz="w"></i>
+      <i class="rz rz-ne" data-rz="ne"></i><i class="rz rz-nw" data-rz="nw"></i>
+      <i class="rz rz-se" data-rz="se"></i><i class="rz rz-sw" data-rz="sw"></i>
     </section>
   </main>
 
@@ -1795,6 +1833,86 @@ footer b { color: var(--text-dim); }
     var ta = $("notesGrid").querySelector("textarea");
     if (ta) ta.focus();
   });
+
+  // ---- floating notes window: drag to move, pull edges/corners to resize ----
+  var notesPanel = $("notesPanel");
+  var WIN_MIN_W = 320, WIN_MIN_H = 240;
+  function winEnabled() { return window.innerWidth > 860; }
+  function winDefault() {
+    var w = Math.min(560, window.innerWidth - 48);
+    var h = Math.min(430, window.innerHeight - 96);
+    return { x: 24, y: window.innerHeight - h - 24, w: w, h: h };
+  }
+  function winClamp(g) {
+    g.w = Math.max(WIN_MIN_W, Math.min(g.w, window.innerWidth - 16));
+    g.h = Math.max(WIN_MIN_H, Math.min(g.h, window.innerHeight - 16));
+    g.x = Math.max(8, Math.min(g.x, window.innerWidth - g.w - 8));
+    g.y = Math.max(8, Math.min(g.y, window.innerHeight - 60));
+    return g;
+  }
+  function winApply() {
+    if (!winEnabled()) {
+      notesPanel.classList.remove("floating");
+      notesPanel.style.left = notesPanel.style.top = notesPanel.style.width = notesPanel.style.height = "";
+      return;
+    }
+    var g = winClamp(state.notesWin && typeof state.notesWin.w === "number" ? state.notesWin : winDefault());
+    notesPanel.classList.add("floating");
+    notesPanel.style.left = g.x + "px";
+    notesPanel.style.top = g.y + "px";
+    notesPanel.style.width = g.w + "px";
+    notesPanel.style.height = g.h + "px";
+  }
+  function winGeom() {
+    var r = notesPanel.getBoundingClientRect();
+    return { x: r.left, y: r.top, w: r.width, h: r.height };
+  }
+  function winTrack(e, onMove, doneClass) {
+    e.preventDefault();
+    notesPanel.classList.add(doneClass);
+    var sx = e.clientX, sy = e.clientY;
+    function mv(ev) { onMove(ev.clientX - sx, ev.clientY - sy); }
+    function up() {
+      document.removeEventListener("pointermove", mv);
+      document.removeEventListener("pointerup", up);
+      notesPanel.classList.remove(doneClass);
+      state.notesWin = winClamp(winGeom());
+      save(); winApply();
+    }
+    document.addEventListener("pointermove", mv);
+    document.addEventListener("pointerup", up);
+  }
+  $("notesDrag").addEventListener("pointerdown", function (e) {
+    if (!winEnabled() || e.target.closest("button")) return;
+    var g = winGeom();
+    winTrack(e, function (dx, dy) {
+      notesPanel.style.left = Math.max(8, Math.min(g.x + dx, window.innerWidth - g.w - 8)) + "px";
+      notesPanel.style.top = Math.max(8, Math.min(g.y + dy, window.innerHeight - 60)) + "px";
+    }, "win-moving");
+  });
+  Array.prototype.forEach.call(notesPanel.querySelectorAll(".rz"), function (h) {
+    h.addEventListener("pointerdown", function (e) {
+      if (!winEnabled()) return;
+      var dir = h.getAttribute("data-rz");
+      var g = winGeom();
+      winTrack(e, function (dx, dy) {
+        var x = g.x, y = g.y, w = g.w, hh = g.h;
+        if (dir.indexOf("e") > -1) w = g.w + dx;
+        if (dir.indexOf("s") > -1) hh = g.h + dy;
+        if (dir.indexOf("w") > -1) { w = g.w - dx; x = g.x + dx; }
+        if (dir.indexOf("n") > -1) { hh = g.h - dy; y = g.y + dy; }
+        if (w < WIN_MIN_W) { if (dir.indexOf("w") > -1) x -= WIN_MIN_W - w; w = WIN_MIN_W; }
+        if (hh < WIN_MIN_H) { if (dir.indexOf("n") > -1) y -= WIN_MIN_H - hh; hh = WIN_MIN_H; }
+        notesPanel.style.left = x + "px"; notesPanel.style.top = y + "px";
+        notesPanel.style.width = w + "px"; notesPanel.style.height = hh + "px";
+      }, "win-sizing");
+    });
+  });
+  $("notesReset").addEventListener("click", function () {
+    state.notesWin = null; save(); winApply(); toast("Notes window reset");
+  });
+  window.addEventListener("resize", winApply);
+  winApply();
 
   // ============ stats ============
   var prevAllDone = null;
