@@ -25,5 +25,5 @@ Just open `index.html` in any modern browser. That's it.
 
 ## Deployment
 
-Pushes to this repo automatically deploy to GitHub Pages via
-`.github/workflows/deploy-pages.yml`.
+The site is served by GitHub Pages directly from this branch
+(deploy-from-branch mode). Every push publishes automatically.
