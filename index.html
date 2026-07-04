@@ -119,6 +119,7 @@ header { display: flex; align-items: flex-start; justify-content: space-between;
 /* ---------- Layout ---------- */
 .grid { display: grid; grid-template-columns: 1.55fr 1fr; gap: 18px; align-items: start; }
 @media (max-width: 940px) { .grid { grid-template-columns: 1fr; } }
+.col { display: grid; gap: 18px; align-content: start; }
 .panel { padding: 20px 22px 24px; }
 .panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
 .panel-head h2 { font-family: 'Sora', sans-serif; font-size: 1.12rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
@@ -516,8 +517,20 @@ footer b { color: var(--text-dim); }
 .rz-sw { bottom: -6px; left: -6px; width: 16px; height: 16px; cursor: nesw-resize; }
 .notes-sub { color: var(--text-dim); font-size: 0.85rem; margin: -4px 0 14px; line-height: 1.5; }
 .float-hint { color: var(--text-faint); }
+#notesHead { cursor: grab; }
+.notes-moving { opacity: 0.55; }
+.notes-moving #notesHead { cursor: grabbing; }
+#homeGrid > .notes-panel, #rightCol > .notes-panel { margin-top: 0; }
+.dock-slot {
+  border: 2px dashed var(--border-strong); border-radius: 16px; padding: 18px;
+  text-align: center; color: var(--text-faint); font-size: 0.85rem; font-weight: 600;
+  transition: all 0.15s; animation: pop 0.2s ease;
+}
+.dock-slot.active { border-color: var(--accent); color: var(--text); background: rgba(124, 92, 255, 0.08); }
+#tab-home > .dock-slot { margin-top: 20px; }
 @media (max-width: 860px) {
   .rz, .float-hint, #notesReset { display: none; }
+  #notesHead { cursor: default; }
 }
 .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
 .note {
@@ -666,7 +679,7 @@ footer b { color: var(--text-dim); }
       </div>
     </section>
 
-    <div class="grid">
+    <div class="grid" id="homeGrid">
       <!-- Tasks -->
       <div class="card panel">
         <div class="panel-head">
@@ -694,7 +707,7 @@ footer b { color: var(--text-dim); }
         <div id="taskArea"></div>
       </div>
 
-      <div class="col">
+      <div class="col" id="rightCol">
         <!-- Growth Garden -->
         <div class="card panel">
           <div class="panel-head">
@@ -729,14 +742,14 @@ footer b { color: var(--text-dim); }
 
     <!-- Notes & scratchpad -->
     <section class="card panel notes-panel" id="notesPanel">
-      <div class="panel-head">
+      <div class="panel-head" id="notesHead" title="Drag to move this panel">
         <h2>Notes</h2>
         <div class="notes-head-right">
           <button class="note-act" id="notesReset" title="Reset panel size">Reset size</button>
           <button class="btn-add" id="noteAdd">+ New note</button>
         </div>
       </div>
-      <p class="notes-sub">Sticky notes for reminders, journaling, or drafting a message for your coach. <span class="float-hint">Pull an edge or corner to resize this panel.</span></p>
+      <p class="notes-sub">Sticky notes for reminders, journaling, or drafting a message for your coach. <span class="float-hint">Drag the header to move this panel · pull an edge or corner to resize.</span></p>
       <div class="notes-scroll"><div class="notes-grid" id="notesGrid"></div></div>
       <i class="rz rz-s" data-rz="s"></i>
       <i class="rz rz-e" data-rz="e"></i><i class="rz rz-w" data-rz="w"></i>
@@ -1871,7 +1884,61 @@ footer b { color: var(--text-dim); }
     state.notesWin = null; save(); sizeApply(); toast("Notes panel size reset");
   });
   window.addEventListener("resize", sizeApply);
-  sizeApply();
+
+  // ---- movable: drag the header, drop into one of three dock spots ----
+  var DOCKS = {
+    left: { el: function () { return $("homeGrid"); }, label: "Move here — under My Tasks" },
+    right: { el: function () { return $("rightCol"); }, label: "Move here — under AI Coach" },
+    bottom: { el: function () { return $("tab-home"); }, label: "Move here — bottom, full width" }
+  };
+  if (!DOCKS[state.notesDock]) state.notesDock = "bottom";
+  function applyDock() {
+    DOCKS[state.notesDock].el().appendChild(notesPanel);
+    sizeApply();
+  }
+  $("notesHead").addEventListener("pointerdown", function (e) {
+    if (!sizeEnabled() || e.target.closest("button")) return;
+    e.preventDefault();
+    var started = false, slots = [], current = null;
+    var sx = e.clientX, sy = e.clientY;
+    function begin() {
+      started = true;
+      notesPanel.classList.add("notes-moving");
+      Object.keys(DOCKS).forEach(function (d) {
+        if (d === state.notesDock) return;
+        var s = document.createElement("div");
+        s.className = "dock-slot";
+        s.setAttribute("data-dock", d);
+        s.textContent = DOCKS[d].label;
+        DOCKS[d].el().appendChild(s);
+        slots.push(s);
+      });
+    }
+    function mv(ev) {
+      if (!started && Math.abs(ev.clientX - sx) + Math.abs(ev.clientY - sy) > 8) begin();
+      if (!started) return;
+      current = null;
+      slots.forEach(function (s) {
+        var r = s.getBoundingClientRect();
+        var hit = ev.clientX >= r.left && ev.clientX <= r.right && ev.clientY >= r.top && ev.clientY <= r.bottom;
+        s.classList.toggle("active", hit);
+        if (hit) current = s.getAttribute("data-dock");
+      });
+    }
+    function up() {
+      document.removeEventListener("pointermove", mv);
+      document.removeEventListener("pointerup", up);
+      notesPanel.classList.remove("notes-moving");
+      slots.forEach(function (s) { s.remove(); });
+      if (started && current) {
+        state.notesDock = current; save(); applyDock();
+        toast("Notes moved");
+      }
+    }
+    document.addEventListener("pointermove", mv);
+    document.addEventListener("pointerup", up);
+  });
+  applyDock();
 
   // ============ stats ============
   var prevAllDone = null;
