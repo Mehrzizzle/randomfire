@@ -79,7 +79,7 @@ header { display: flex; align-items: flex-start; justify-content: space-between;
   font-weight: 800; letter-spacing: -0.02em; line-height: 1.15;
 }
 .greeting h1 .gname { background: linear-gradient(100deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; cursor: pointer; }
-.quoteline { color: var(--text-dim); font-size: 0.92rem; margin-top: 5px; max-width: 620px; line-height: 1.5; cursor: pointer; }
+.quoteline { color: var(--text-dim); font-size: 0.9rem; margin: -8px 0 14px; line-height: 1.5; cursor: pointer; font-style: italic; }
 .quoteline:hover { color: var(--text); }
 .quoteline .qa { color: var(--text-faint); font-style: normal; white-space: nowrap; }
 .header-actions { display: flex; align-items: center; gap: 10px; }
@@ -341,7 +341,14 @@ footer b { color: var(--text-dim); }
   width: 52px; height: 52px; border-radius: 16px; flex-shrink: 0; display: grid; place-items: center;
   font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.05rem; color: #fff;
   box-shadow: 0 8px 18px -6px rgba(0,0,0,0.5);
+  position: relative; overflow: hidden;
 }
+.mono img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center top; animation: pop 0.3s ease;
+}
+.bio .by { display: flex; align-items: center; gap: 8px; }
+.bio-ava { width: 30px; height: 30px; border-radius: 10px; font-size: 0.6rem; box-shadow: none; }
 .story-head .who { min-width: 0; }
 .story-head .nm { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.02rem; }
 .story-head .rl { color: var(--text-faint); font-size: 0.8rem; font-weight: 600; margin-top: 1px; }
@@ -620,7 +627,6 @@ footer b { color: var(--text-dim); }
       </div>
       <div class="greeting">
         <h1 id="greet">Hello</h1>
-        <p class="quoteline" id="quoteline" title="Click for another quote"></p>
       </div>
     </div>
     <div class="header-actions">
@@ -687,6 +693,7 @@ footer b { color: var(--text-dim); }
             </div>
           </div>
         </div>
+        <p class="quoteline" id="quoteline" title="Click for another quote"></p>
         <div class="add-row">
           <input id="taskInput" type="text" placeholder="Add a task and press Enter…" maxlength="120" />
           <button class="btn-add" id="addTaskBtn">
@@ -1973,11 +1980,11 @@ footer b { color: var(--text-dim); }
       fall: "Born into poverty, survived years of abuse, and was fired from her first anchor job — told to her face she was “unfit for television news.”",
       rise: "She turned her pain into connection, built the highest-rated talk show ever, and became one of the most powerful women in the world.",
       q: "Turn your wounds into wisdom." },
-    { n: "Colonel Harland Sanders", r: "Broke at 65 → KFC in every corner of the world", g: "linear-gradient(135deg,#f87171,#991b1b)",
+    { n: "Colonel Harland Sanders", wp: "Colonel Sanders", r: "Broke at 65 → KFC in every corner of the world", g: "linear-gradient(135deg,#f87171,#991b1b)",
       fall: "At 65, a new highway killed his restaurant. Left with a $105 social-security check, he drove town to town sleeping in his car — his recipe rejected over 1,000 times.",
       rise: "Rejection number 1,010 said yes. His name and face now feed millions in 145+ countries — an empire started at an age when most people stop.",
       q: "No hours, nor amount of labor, nor amount of money would deter me." },
-    { n: "J.K. Rowling", r: "Broke single mom → best-selling author alive", g: "linear-gradient(135deg,#a78bfa,#5b21b6)",
+    { n: "J.K. Rowling", wp: "J. K. Rowling", r: "Broke single mom → best-selling author alive", g: "linear-gradient(135deg,#a78bfa,#5b21b6)",
       fall: "Divorced, jobless, clinically depressed, raising a baby on welfare — “as poor as it is possible to be without being homeless.” Twelve publishers rejected Harry Potter.",
       rise: "The thirteenth said yes. Her books have sold over 600 million copies and taught a generation that magic is real if you keep writing.",
       q: "Rock bottom became the solid foundation on which I rebuilt my life." },
@@ -2060,7 +2067,7 @@ footer b { color: var(--text-dim); }
     { n: "Can't Hurt Me", by: "David Goggins",
       why: "An abused kid, 300 pounds, spraying roaches in a dead-end job — who willed himself into a Navy SEAL and the hardest ultra-endurance athlete alive. The manual for building an unbreakable mind. Read this when you've gone soft on yourself and know it.",
       link: "https://www.goodreads.com/search?q=can%27t+hurt+me+goggins" },
-    { n: "The Autobiography of Malcolm X", by: "Malcolm X with Alex Haley",
+    { n: "The Autobiography of Malcolm X", by: "Malcolm X with Alex Haley", wp: "Malcolm X",
       why: "From street hustler to a prison cell — where he copied out the entire dictionary by hand — to one of the most electrifying voices in history. The ultimate proof that a person can completely remake themselves. Read this when you think it's too late to change.",
       link: "https://www.goodreads.com/search?q=autobiography+of+malcolm+x" },
     { n: "Open", by: "Andre Agassi",
@@ -2101,7 +2108,7 @@ footer b { color: var(--text-dim); }
       '<div class="rise-sec-sub">The fall. The rise. The words they left us. Come back to this page whenever the tank feels empty.</div>';
     h += '<div class="stories">' + STORIES.map(function (s) {
       return '<div class="card story">' +
-        '<div class="story-head"><div class="mono" style="background:' + s.g + '">' + esc(initials(s.n)) + "</div>" +
+        '<div class="story-head"><div class="mono" data-wp="' + esc(s.wp || s.n) + '" style="background:' + s.g + '">' + esc(initials(s.n)) + "</div>" +
         '<div class="who"><div class="nm">' + esc(s.n) + '</div><div class="rl">' + esc(s.r) + "</div></div></div>" +
         '<div class="phase fall"><b>The fall</b>' + esc(s.fall) + "</div>" +
         '<div class="phase risen"><b>The rise</b>' + esc(s.rise) + "</div>" +
@@ -2111,7 +2118,7 @@ footer b { color: var(--text-dim); }
       '<div class="rise-sec-sub">Not biographies about them — their own words, from inside the fall and the climb back. In this order.</div>';
     h += '<div class="top3">' + AUTOBIOS.map(function (b, i) {
       return '<div class="card bio"><div class="rankbadge">#' + (i + 1) + "</div>" +
-        "<h4>" + esc(b.n) + '</h4><div class="by">by ' + esc(b.by) + "</div>" +
+        "<h4>" + esc(b.n) + '</h4><div class="by"><span class="mono bio-ava" data-wp="' + esc(b.wp || b.by) + '" style="background:linear-gradient(135deg,var(--accent),var(--accent-2))">' + esc(initials(b.wp || b.by)) + "</span>by " + esc(b.by) + "</div>" +
         "<p>" + esc(b.why) + "</p>" +
         '<a href="' + b.link + '" target="_blank" rel="noopener">Find the book ↗</a></div>';
     }).join("") + "</div>";
@@ -2135,6 +2142,35 @@ footer b { color: var(--text-dim); }
       "That's the whole secret. Not talent. Not luck. <b>One more step, taken again and again, on the days it mattered least to anyone but them.</b> " +
       "Your checked boxes on the other tab are those steps. Your tree is growing from them. Keep going — future you is already grateful.</p></div>";
     $("tab-rise").innerHTML = h;
+    loadRisePhotos($("tab-rise"));
+  }
+
+  // Real portraits, fetched once from Wikipedia's public API and cached.
+  // If a lookup fails (offline, renamed article), the gradient monogram stays.
+  var PHOTO_KEY = "momentum.photos.v1";
+  function loadRisePhotos(root) {
+    var cache = {};
+    try { cache = JSON.parse(localStorage.getItem(PHOTO_KEY)) || {}; } catch (e) {}
+    Array.prototype.forEach.call(root.querySelectorAll("[data-wp]"), function (el) {
+      var title = el.getAttribute("data-wp");
+      function apply(src) {
+        var img = new Image();
+        img.alt = "Portrait of " + title;
+        img.onload = function () { el.appendChild(img); };
+        img.src = src;
+      }
+      if (cache[title]) { apply(cache[title]); return; }
+      fetch("https://en.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(title.replace(/ /g, "_")))
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          var src = j && j.thumbnail && j.thumbnail.source;
+          if (!src) return;
+          cache[title] = src;
+          try { localStorage.setItem(PHOTO_KEY, JSON.stringify(cache)); } catch (e) {}
+          apply(src);
+        })
+        .catch(function () {});
+    });
   }
 
   // ============ tabs ============
