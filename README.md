@@ -8,14 +8,18 @@ saved right in your browser.
 
 ## Features
 
-- ✅ **Daily task checklist** — add, edit, delete, and check off tasks; the list
-  resets fresh every morning while keeping your task definitions
+- 📆 **Day & Week views** — a daily checklist plus a full Monday–Sunday planner
+  grid where every task/day cell is checkable and can carry a custom note
+  (e.g. Gym → Thursday: "Orange Theory")
+- 🗓️ **Per-day scheduling** — each task can run on any subset of weekdays
 - ⭕ **Segmented progress ring** — one segment per task closes as you complete it
-- 🎉 **Completion celebration** — confetti burst when you finish all your tasks
-- 🔥 **Habit tracker** — a 7-day grid per habit with automatic streak counting
+- 🔥 **Automatic streaks** — every task tracks its own consecutive-day streak
+- 🎉 **Completion celebration** — confetti burst when you finish today's tasks
 - 🌳 **Growth Garden** — a plant that grows from a seed into a flourishing tree
-  as your habit check-ins accumulate, across 7 stages of growth
-- 🌗 **Dark & light themes**
+  across 7 stages as your completions accumulate
+- ⚡ **Rise tab** — 18 real comeback stories, quotes, affirmations, videos, and
+  books to refuel motivation
+- 🌗 **Dark & light themes**, personalized greeting with a daily quote
 - 📱 Responsive — works on desktop and mobile
 - 🔒 Private — all data lives in your browser's localStorage; nothing is uploaded
 
