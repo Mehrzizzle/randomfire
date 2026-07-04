@@ -17,8 +17,14 @@ saved right in your browser.
 - 🎉 **Completion celebration** — confetti burst when you finish today's tasks
 - 🌳 **Growth Garden** — a plant that grows from a seed into a flourishing tree
   across 7 stages as your completions accumulate
-- ⚡ **Rise tab** — 18 real comeback stories, quotes, affirmations, videos, and
-  books to refuel motivation
+- 🖐️ **Drag-and-drop reordering** — grab any task's handle to reorder, in both
+  Day and Week views (works on touch too)
+- 🌱 **Streaks tab** — a per-task tracker where each area of your life grows its
+  own plant, with current/best streaks, totals, consistency %, and a 14-day strip
+- 🤖 **AI Coach** — one-tap deep links into Claude or ChatGPT that carry your
+  live stats and a coach persona for kickoffs, tough days, weekly reviews
+- ⚡ **Rise tab** — 18 real comeback stories, top-3 autobiographies, quotes,
+  affirmations, videos, and books to refuel motivation
 - 🌗 **Dark & light themes**, personalized greeting with a daily quote
 - 📱 Responsive — works on desktop and mobile
 - 🔒 Private — all data lives in your browser's localStorage; nothing is uploaded

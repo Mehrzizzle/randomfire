@@ -379,6 +379,80 @@ footer b { color: var(--text-dim); }
 .manifesto p { color: var(--text-dim); line-height: 1.75; max-width: 660px; margin: 0 auto; font-size: 0.98rem; }
 .manifesto p b { color: var(--text); }
 
+/* ---------- Drag handles ---------- */
+.drag-handle {
+  width: 22px; height: 30px; flex-shrink: 0; border: none; background: transparent;
+  color: var(--text-faint); cursor: grab; display: grid; place-items: center;
+  border-radius: 7px; touch-action: none; padding: 0;
+}
+.drag-handle:hover { color: var(--text); background: var(--surface); }
+.drag-handle:active { cursor: grabbing; }
+.drag-handle svg { width: 13px; height: 13px; pointer-events: none; }
+.item.dragging, .wk-row.dragging {
+  opacity: 0.85; position: relative; z-index: 5;
+  box-shadow: 0 14px 30px -10px rgba(0,0,0,0.6);
+  border: 1px solid var(--accent);
+  background: var(--surface-solid);
+}
+.wk-row.dragging .wk-task-col { background: transparent; }
+
+/* ---------- Streaks page ---------- */
+.streak-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 16px; }
+.stk-card { padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; }
+.stk-top { display: flex; align-items: center; gap: 14px; }
+.stk-plant { width: 78px; flex-shrink: 0; filter: drop-shadow(0 6px 12px rgba(16,185,129,0.2)); }
+.stk-plant svg { width: 100%; height: auto; display: block; }
+.stk-info { flex: 1; min-width: 0; }
+.stk-name { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1rem; word-break: break-word; }
+.stk-stage { font-size: 0.76rem; color: var(--text-faint); font-weight: 600; margin-top: 2px; }
+.stk-flame { font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--fire); white-space: nowrap; }
+.stk-flame span { font-size: 0.75rem; font-weight: 700; display: block; text-align: right; color: var(--text-faint); }
+.stk-stats { display: flex; gap: 8px; }
+.stk-stat {
+  flex: 1; text-align: center; background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 11px; padding: 8px 4px;
+}
+.stk-stat .v { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.05rem; }
+.stk-stat .l { font-size: 0.66rem; color: var(--text-faint); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 1px; }
+.dotstrip { display: flex; gap: 4px; align-items: center; }
+.dotstrip .d { flex: 1; height: 16px; border-radius: 5px; background: var(--surface-2); border: 1px solid var(--border); }
+.dotstrip .d.on { background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; }
+.dotstrip .d.miss { background: rgba(248, 113, 113, 0.15); border-color: rgba(248,113,113,0.25); }
+.dotstrip .d.off { opacity: 0.3; }
+.dotstrip .d.today { outline: 2px solid var(--accent); outline-offset: 1px; }
+.strip-label { font-size: 0.7rem; color: var(--text-faint); font-weight: 600; margin-top: 4px; display: flex; justify-content: space-between; }
+.streaks-head { margin: 6px 0 16px; }
+.streaks-head h2 { font-family: 'Sora', sans-serif; font-size: 1.4rem; font-weight: 800; }
+.streaks-head p { color: var(--text-dim); font-size: 0.92rem; margin-top: 4px; }
+
+/* ---------- AI Coach ---------- */
+.coach-sub { color: var(--text-dim); font-size: 0.88rem; line-height: 1.5; margin-bottom: 14px; }
+.coach-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.coach-btn {
+  border: 1px solid var(--border); background: var(--surface-2); color: var(--text);
+  font-family: inherit; font-weight: 600; font-size: 0.85rem; padding: 12px 10px;
+  border-radius: 12px; cursor: pointer; transition: all 0.18s; text-align: left; line-height: 1.35;
+}
+.coach-btn:hover { border-color: var(--accent); transform: translateY(-2px); background: var(--surface-solid); }
+.coach-btn .em { display: block; font-size: 1.2rem; margin-bottom: 4px; }
+.coach-note { font-size: 0.75rem; color: var(--text-faint); margin-top: 12px; line-height: 1.5; }
+
+/* ---------- Rise top-3 autobiographies ---------- */
+.top3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 6px; }
+.bio { padding: 20px; position: relative; display: flex; flex-direction: column; gap: 8px; }
+.rankbadge {
+  position: absolute; top: -12px; left: 18px; width: 34px; height: 34px; border-radius: 11px;
+  display: grid; place-items: center; font-family: 'Sora', sans-serif; font-weight: 800;
+  color: #fff; font-size: 0.95rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 6px 14px -4px rgba(124,92,255,0.6);
+}
+.bio h4 { font-family: 'Sora', sans-serif; font-size: 1.02rem; margin-top: 10px; }
+.bio .by { color: var(--text-faint); font-size: 0.8rem; font-weight: 600; }
+.bio p { color: var(--text-dim); font-size: 0.87rem; line-height: 1.55; }
+.bio a { color: var(--accent-2); font-size: 0.83rem; font-weight: 700; text-decoration: none; margin-top: auto; }
+.bio a:hover { text-decoration: underline; }
+
 #g1 stop:nth-child(1) { stop-color: var(--accent); }
 #g1 stop:nth-child(2) { stop-color: var(--accent-2); }
 </style>
@@ -402,6 +476,7 @@ footer b { color: var(--text-dim); }
 
   <nav class="tabs" id="tabsNav">
     <button data-tab="home" class="active">📋 Dashboard</button>
+    <button data-tab="streaks">🔥 Streaks</button>
     <button data-tab="rise">⚡ Rise</button>
   </nav>
 
@@ -471,29 +546,53 @@ footer b { color: var(--text-dim); }
         <div id="taskArea"></div>
       </div>
 
-      <!-- Growth Garden -->
-      <div class="card panel">
-        <div class="panel-head">
-          <h2><span class="dot" style="background:var(--good)"></span> Growth Garden</h2>
-          <span class="datechip" id="gardenPill">Seed</span>
-        </div>
-        <div class="garden">
-          <div class="plant-box" id="plantBox" role="img" aria-label="Your growth plant"></div>
-          <div class="garden-info">
-            <div class="stage-step" id="stageStep">Stage 1 of 7</div>
-            <div class="stage-name" id="stageName">Seed</div>
-            <div class="stage-sub" id="stageSub">Every completed task helps your plant grow.</div>
-            <div class="progress-track garden-track"><div class="progress-fill" id="gardenFill"></div></div>
-            <div class="garden-meta">
-              <span class="chip" id="chipTotal">🌱 0 completions</span>
-              <span class="chip" id="chipStreak">🔥 best streak 0</span>
-            </div>
-            <div class="stage-ladder" id="stageLadder"></div>
+      <div class="col">
+        <!-- Growth Garden -->
+        <div class="card panel">
+          <div class="panel-head">
+            <h2><span class="dot" style="background:var(--good)"></span> Growth Garden</h2>
+            <span class="datechip" id="gardenPill">Seed</span>
           </div>
+          <div class="garden">
+            <div class="plant-box" id="plantBox" role="img" aria-label="Your growth plant"></div>
+            <div class="garden-info">
+              <div class="stage-step" id="stageStep">Stage 1 of 7</div>
+              <div class="stage-name" id="stageName">Seed</div>
+              <div class="stage-sub" id="stageSub">Every completed task helps your plant grow.</div>
+              <div class="progress-track garden-track"><div class="progress-fill" id="gardenFill"></div></div>
+              <div class="garden-meta">
+                <span class="chip" id="chipTotal">🌱 0 completions</span>
+                <span class="chip" id="chipStreak">🔥 best streak 0</span>
+              </div>
+              <div class="stage-ladder" id="stageLadder"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Coach -->
+        <div class="card panel">
+          <div class="panel-head">
+            <h2><span class="dot" style="background:var(--warn)"></span> AI Coach</h2>
+            <div class="seg" id="coachSeg">
+              <button data-ai="claude">Claude</button>
+              <button data-ai="chatgpt">ChatGPT</button>
+            </div>
+          </div>
+          <p class="coach-sub">Your personal coach already knows your streaks, today's tasks, and your tree — every button below carries your live stats into the chat.</p>
+          <div class="coach-btns">
+            <button class="coach-btn" data-mode="kickoff"><span class="em">🌅</span>Morning kickoff</button>
+            <button class="coach-btn" data-mode="struggling"><span class="em">🆘</span>I'm struggling today</button>
+            <button class="coach-btn" data-mode="review"><span class="em">📊</span>Review my week</button>
+            <button class="coach-btn" data-mode="win"><span class="em">🎉</span>Celebrate a win</button>
+          </div>
+          <p class="coach-note">Opens a chat in your own Claude or ChatGPT account (free, nothing to set up). Your data stays in your browser — only the summary you see in the prompt is shared.</p>
         </div>
       </div>
     </div>
   </main>
+
+  <!-- ================= STREAKS ================= -->
+  <main id="tab-streaks" hidden></main>
 
   <!-- ================= RISE ================= -->
   <main id="tab-rise" hidden></main>
@@ -676,6 +775,69 @@ footer b { color: var(--text-dim); }
   var noteSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>';
   var delSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>';
   var fireSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg>';
+  var gripSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.7"/><circle cx="15" cy="5" r="1.7"/><circle cx="9" cy="12" r="1.7"/><circle cx="15" cy="12" r="1.7"/><circle cx="9" cy="19" r="1.7"/><circle cx="15" cy="19" r="1.7"/></svg>';
+
+  // ============ drag & drop reordering ============
+  function makeHandle() {
+    var h = document.createElement("button");
+    h.type = "button";
+    h.className = "drag-handle";
+    h.title = "Drag to reorder";
+    h.setAttribute("aria-label", "Drag to reorder");
+    h.innerHTML = gripSvg;
+    return h;
+  }
+  function enableDrag(container, itemSel, handleSel) {
+    container.addEventListener("pointerdown", function (e) {
+      var h = e.target.closest ? e.target.closest(handleSel) : null;
+      if (!h || !container.contains(h)) return;
+      var dragEl = h.closest(itemSel);
+      if (!dragEl) return;
+      e.preventDefault();
+      dragEl.classList.add("dragging");
+      document.body.style.userSelect = "none";
+      var moved = false;
+      function items() {
+        return Array.prototype.filter.call(
+          container.querySelectorAll(itemSel),
+          function (x) { return x !== dragEl; }
+        );
+      }
+      function onMove(ev) {
+        ev.preventDefault();
+        moved = true;
+        var y = ev.clientY;
+        var list = items(), placed = false;
+        for (var i = 0; i < list.length; i++) {
+          var r = list[i].getBoundingClientRect();
+          if (y < r.top + r.height / 2) {
+            if (dragEl.nextSibling !== list[i]) container.insertBefore(dragEl, list[i]);
+            placed = true;
+            break;
+          }
+        }
+        if (!placed && container.lastElementChild !== dragEl) container.appendChild(dragEl);
+      }
+      function onUp() {
+        document.removeEventListener("pointermove", onMove);
+        document.removeEventListener("pointerup", onUp);
+        document.removeEventListener("pointercancel", onUp);
+        dragEl.classList.remove("dragging");
+        document.body.style.userSelect = "";
+        if (moved) {
+          var order = Array.prototype.map.call(
+            container.querySelectorAll(itemSel),
+            function (x) { return x.getAttribute("data-id"); }
+          );
+          state.tasks.sort(function (a, b) { return order.indexOf(a.id) - order.indexOf(b.id); });
+          save(); renderTasks();
+        }
+      }
+      document.addEventListener("pointermove", onMove, { passive: false });
+      document.addEventListener("pointerup", onUp);
+      document.addEventListener("pointercancel", onUp);
+    });
+  }
 
   // ============ streaks ============
   function streakOf(t) {
@@ -688,6 +850,44 @@ footer b { color: var(--text-dim); }
       else break;
     }
     return s;
+  }
+  function parseKey(k) {
+    var p = k.split("-");
+    return new Date(+p[0], +p[1] - 1, +p[2]);
+  }
+  function bestStreakOf(t) {
+    var doneKeys = Object.keys(t.history).filter(function (k) { return t.history[k].done; }).sort();
+    if (!doneKeys.length) return 0;
+    var d = parseKey(doneKeys[0]);
+    var today = new Date();
+    var todayKeyStr = dateKey(today);
+    var best = 0, run = 0;
+    for (var i = 0; i < 3650 && d <= today; i++) {
+      var k = dateKey(d);
+      if (t.days[wd(d)]) {
+        if (isDone(t, k)) { run++; if (run > best) best = run; }
+        else if (k !== todayKeyStr) run = 0; // today-not-yet-done doesn't break the run
+      }
+      d = new Date(d.getTime() + DAY_MS);
+    }
+    return best;
+  }
+  function totalDone(t) {
+    var n = 0;
+    Object.keys(t.history).forEach(function (k) { if (t.history[k].done) n++; });
+    return n;
+  }
+  function consistency28(t) {
+    var sched = 0, done = 0;
+    var d = new Date();
+    for (var i = 0; i < 28; i++) {
+      if (t.days[wd(d)]) {
+        sched++;
+        if (isDone(t, dateKey(d))) done++;
+      }
+      d = new Date(d.getTime() - DAY_MS);
+    }
+    return sched ? Math.round((done / sched) * 100) : 0;
   }
 
   // ============ modal ============
@@ -838,6 +1038,8 @@ footer b { color: var(--text-dim); }
       var streak = streakOf(t);
       var el = document.createElement("div");
       el.className = "item" + (done ? " done" : "");
+      el.setAttribute("data-id", t.id);
+      el.appendChild(makeHandle());
 
       var cb = document.createElement("button");
       cb.className = "check"; cb.setAttribute("aria-label", "Toggle task"); cb.innerHTML = checkSvg;
@@ -872,6 +1074,7 @@ footer b { color: var(--text-dim); }
     });
     area.innerHTML = "";
     area.appendChild(list);
+    enableDrag(list, ".item", ".drag-handle");
   }
 
   function renderWeek() {
@@ -904,9 +1107,11 @@ footer b { color: var(--text-dim); }
     state.tasks.forEach(function (t) {
       var row = document.createElement("div");
       row.className = "wk-row";
+      row.setAttribute("data-id", t.id);
 
       var tc = document.createElement("div");
       tc.className = "wk-task-col";
+      tc.appendChild(makeHandle());
       var nm = document.createElement("span");
       nm.className = "wk-task-name"; nm.textContent = t.text; nm.title = "Edit task";
       nm.addEventListener("click", function () { editTaskModal(t.id); });
@@ -955,6 +1160,7 @@ footer b { color: var(--text-dim); }
     scroll.appendChild(wk);
     area.innerHTML = "";
     area.appendChild(scroll);
+    enableDrag(wk, ".wk-row:not(.wk-head)", ".drag-handle");
   }
 
   function renderTasks() {
@@ -1107,6 +1313,115 @@ footer b { color: var(--text-dim); }
     } else if (idx < state.gardenStage) { state.gardenStage = idx; save(); }
   }
 
+  // ============ Streaks page ============
+  var MINI_STAGES = [0, 3, 7, 14, 25, 40, 60]; // per-task plant thresholds
+  function miniStageFor(pts) {
+    var s = 0;
+    for (var i = 0; i < MINI_STAGES.length; i++) if (pts >= MINI_STAGES[i]) s = i;
+    return s;
+  }
+  function renderStreaksPage() {
+    var root = $("tab-streaks");
+    var h = '<div class="streaks-head"><h2>🔥 Streak Tracker</h2>' +
+      "<p>One seedling per area of your life. Every completion waters it — watch each one grow into its own tree.</p></div>";
+    if (!state.tasks.length) {
+      root.innerHTML = h + '<div class="card panel"><div class="empty"><p>No tasks yet — add some on the Dashboard and your trackers will appear here.</p></div></div>';
+      return;
+    }
+    root.innerHTML = h + '<div class="streak-grid" id="streakGrid"></div>';
+    var grid = $("streakGrid");
+    var tk = dateKey(new Date());
+    state.tasks.forEach(function (t, idx) {
+      var cur = streakOf(t);
+      var best = bestStreakOf(t);
+      var total = totalDone(t);
+      var cons = consistency28(t);
+      var stage = miniStageFor(total);
+      var next = MINI_STAGES[stage + 1];
+
+      var card = document.createElement("div");
+      card.className = "card stk-card";
+
+      var strip = "";
+      var d = new Date(Date.now() - 13 * DAY_MS);
+      for (var i = 0; i < 14; i++) {
+        var k = dateKey(d);
+        var cls = "d";
+        if (!t.days[wd(d)]) cls += " off";
+        else if (isDone(t, k)) cls += " on";
+        else if (k !== tk) cls += " miss";
+        if (k === tk) cls += " today";
+        strip += '<span class="' + cls + '" title="' + k + '"></span>';
+        d = new Date(d.getTime() + DAY_MS);
+      }
+
+      // crop the 200x200 canvas so the plant fills the small tile, and make
+      // gradient ids unique per card (duplicate ids resolve into hidden tabs and paint black)
+      var mini = plantSvg(stage)
+        .replace('viewBox="0 0 200 200"', 'viewBox="35 35 130 160"')
+        .replace(/(grassG|leafG|canopyG|trunkG|seedG)/g, "$1_s" + idx);
+      card.innerHTML =
+        '<div class="stk-top">' +
+        '<div class="stk-plant">' + mini + "</div>" +
+        '<div class="stk-info"><div class="stk-name"></div>' +
+        '<div class="stk-stage">' + esc(STAGES[stage].name) + (next ? " · " + (next - total) + " to next stage" : " · fully grown!") + "</div></div>" +
+        '<div class="stk-flame">🔥 ' + cur + "<span>day streak</span></div></div>" +
+        '<div class="stk-stats">' +
+        '<div class="stk-stat"><div class="v">' + best + '</div><div class="l">Best streak</div></div>' +
+        '<div class="stk-stat"><div class="v">' + total + '</div><div class="l">Completions</div></div>' +
+        '<div class="stk-stat"><div class="v">' + cons + '%</div><div class="l">Last 28 days</div></div></div>' +
+        '<div><div class="dotstrip">' + strip + "</div>" +
+        '<div class="strip-label"><span>2 weeks ago</span><span>today</span></div></div>';
+      card.querySelector(".stk-name").textContent = t.text;
+      grid.appendChild(card);
+    });
+  }
+
+  // ============ AI Coach ============
+  if (state.coach !== "chatgpt" && state.coach !== "claude") state.coach = "claude";
+  function renderCoachSeg() {
+    Array.prototype.forEach.call($("coachSeg").children, function (b) {
+      b.className = b.getAttribute("data-ai") === state.coach ? "active" : "";
+    });
+  }
+  $("coachSeg").addEventListener("click", function (e) {
+    var v = e.target.getAttribute && e.target.getAttribute("data-ai");
+    if (v) { state.coach = v; save(); renderCoachSeg(); }
+  });
+  function coachPrompt(mode) {
+    var tk = dateKey(new Date());
+    var w = wd(new Date());
+    var lines = state.tasks.map(function (t) {
+      var status = !t.days[w] ? "not scheduled today" : (isDone(t, tk) ? "DONE today" : "not done yet today");
+      return "- " + t.text + " — " + status + ", current streak " + streakOf(t) + " days, best " + bestStreakOf(t) + " days";
+    }).join("\n");
+    var stage = STAGES[stageFor(growthPoints())];
+    var base =
+      "You are my personal growth coach — warm, energizing, direct, and occasionally playful. " +
+      "Your mission: lift me up, hold me accountable, and inspire me like the great comeback stories (Mandela, Rocky, Goggins, Jim Carrey). " +
+      "Keep replies concise and punchy, speak to me by name, and always end with ONE small concrete next step I can do right now.\n\n" +
+      "My name: " + state.name + ".\n" +
+      "Today: " + new Date().toDateString() + ".\n" +
+      "My habit dashboard right now:\n" + lines + "\n" +
+      "Growth Garden stage: " + stage.name + " (" + growthPoints() + " total completions).\n\n";
+    var asks = {
+      kickoff: "Give me a powerful 60-second morning kickoff for today's tasks. Fire me up.",
+      struggling: "I'm struggling and low on motivation today. Coach me through it — acknowledge it, then help me find one small win.",
+      review: "Review my week honestly based on my stats above: what's working, what's slipping, and my #1 focus for next week.",
+      win: "I just crushed it — celebrate with me like a proud coach, then help me lock in this momentum for tomorrow."
+    };
+    return base + (asks[mode] || asks.kickoff);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll(".coach-btn"), function (b) {
+    b.addEventListener("click", function () {
+      var q = encodeURIComponent(coachPrompt(b.getAttribute("data-mode")));
+      var url = state.coach === "chatgpt"
+        ? "https://chatgpt.com/?q=" + q
+        : "https://claude.ai/new?q=" + q;
+      window.open(url, "_blank", "noopener");
+    });
+  });
+
   // ============ stats ============
   var prevAllDone = null;
   function updateStats() {
@@ -1243,6 +1558,17 @@ footer b { color: var(--text-dim); }
     ["David Goggins — The 40% rule", "when you think you're done, you're at 40%", "https://www.youtube.com/results?search_query=david+goggins+40+percent+rule+motivation"],
     ["Muhammad Ali — The comeback", "Rumble in the Jungle highlights", "https://www.youtube.com/results?search_query=muhammad+ali+rumble+in+the+jungle+comeback"]
   ];
+  var AUTOBIOS = [
+    { n: "Long Walk to Freedom", by: "Nelson Mandela",
+      why: "27 years in a cell, written partly in secret on Robben Island. The definitive proof that no fall is final — a man loses everything, keeps his dignity, and rises to lead the nation that imprisoned him. Read this first when life feels unjust.",
+      link: "https://www.goodreads.com/search?q=long+walk+to+freedom+mandela" },
+    { n: "The Pursuit of Happyness", by: "Chris Gardner",
+      why: "Homeless with a toddler, sleeping in subway bathrooms, and still showing up to an unpaid internship in his one suit. The rawest street-level comeback ever written — from rock bottom to owning a brokerage firm. Read this when you feel you have nothing.",
+      link: "https://www.goodreads.com/search?q=the+pursuit+of+happyness+chris+gardner" },
+    { n: "Open", by: "Andre Agassi",
+      why: "A champion who fell to #141 in the world — washed up, written off, hair and confidence gone — then rebuilt himself point by point back to #1, winning more after the collapse than before it. Read this when you've lost your edge and doubt you can get it back.",
+      link: "https://www.goodreads.com/search?q=open+andre+agassi" }
+  ];
   var BOOKS = [
     ["Man's Search for Meaning", "Viktor Frankl — meaning in the worst of it", "https://www.goodreads.com/search?q=man%27s+search+for+meaning+frankl"],
     ["Can't Hurt Me", "David Goggins — master your mind, defy the odds", "https://www.goodreads.com/search?q=can%27t+hurt+me+goggins"],
@@ -1272,6 +1598,14 @@ footer b { color: var(--text-dim); }
         '<div class="phase risen"><b>The rise</b>' + esc(s.rise) + "</div>" +
         "<blockquote>“" + esc(s.q) + "”<footer>— " + esc(s.n) + "</footer></blockquote></div>";
     }).join("") + "</div>";
+    h += '<div class="rise-sec-title">📖 Top 3 autobiographies to read first</div>' +
+      '<div class="rise-sec-sub">Not biographies about them — their own words, from inside the fall and the climb back. In this order.</div>';
+    h += '<div class="top3">' + AUTOBIOS.map(function (b, i) {
+      return '<div class="card bio"><div class="rankbadge">#' + (i + 1) + "</div>" +
+        "<h4>" + esc(b.n) + '</h4><div class="by">by ' + esc(b.by) + "</div>" +
+        "<p>" + esc(b.why) + "</p>" +
+        '<a href="' + b.link + '" target="_blank" rel="noopener">Find the book ↗</a></div>';
+    }).join("") + "</div>";
     h += '<div class="rise-sec-title">⛽ Fuel station</div>' +
       '<div class="rise-sec-sub">When reading isn’t enough — watch, listen, absorb.</div>';
     h += '<div class="fuel"><div class="card fuel-card"><h3>🎬 Watch these when you need fire</h3><div class="fuel-list">' +
@@ -1292,12 +1626,14 @@ footer b { color: var(--text-dim); }
   // ============ tabs ============
   function switchTab(name) {
     $("tab-home").hidden = name !== "home";
+    $("tab-streaks").hidden = name !== "streaks";
     $("tab-rise").hidden = name !== "rise";
     Array.prototype.forEach.call($("tabsNav").children, function (b) {
       b.className = b.getAttribute("data-tab") === name ? "active" : "";
     });
     if (name === "rise" && !$("tab-rise").innerHTML) buildRise();
-    try { history.replaceState(null, "", name === "rise" ? "#rise" : "#"); } catch (e) {}
+    if (name === "streaks") renderStreaksPage(); // always fresh — data changes as you check off
+    try { history.replaceState(null, "", name === "home" ? "#" : "#" + name); } catch (e) {}
     window.scrollTo({ top: 0 });
   }
   $("tabsNav").addEventListener("click", function (e) {
@@ -1309,8 +1645,10 @@ footer b { color: var(--text-dim); }
   applyTheme();
   refreshHeader();
   renderQuote();
+  renderCoachSeg();
   renderTasks();
   if (location.hash === "#rise") switchTab("rise");
+  else if (location.hash === "#streaks") switchTab("streaks");
   save();
   setInterval(refreshHeader, 60000);
 })();
